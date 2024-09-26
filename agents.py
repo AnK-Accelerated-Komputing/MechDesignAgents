@@ -2,7 +2,7 @@ from autogen import ConversableAgent
 from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
-
+import chromadb
 
 config_list_gemini = [
     {
@@ -43,27 +43,43 @@ Cad_codewriter = AssistantAgent(
     llm_config=gemini_config,
     human_input_mode="NEVER",
 )
+
 cad_data = RetrieveUserProxyAgent(
-    name="CAD Code Writer's Assistant",
+    name="CadQuery coder",
+    system_message="""You are a Cadquery code writer that retrieves the relevant code from the given context to create CAD models.
+            Write your code script in Markdown format. For example:
+            ```python
+            import cadquery as cq
+        from ocp_vscode import * # this is used to visualize model with OCP CAD viewer
+        height = 60.0
+        width = 80.0
+        thickness = 10.0
+        # make the base
+        box = cq.Workplane("XY").box(height, width, thickness)
+        show(box)
+        # cq.exporters.export(box, "box.stl")
+        # cq.exporters.export(box.section(), "box.dxf")
+        # cq.exporters.export(box, "box.step")
+        ##
+        ```
+        The code provided will be executed in the order it is written. If a code block fails to execute try to fix the error and write the code block again.
+        Once all code blocks are successfully executed, return 'TERMINATE' to end the conversation.
+        """,
     human_input_mode="NEVER",
-    default_auto_reply="Reply `TERMINATE` if the task is done.",
-    max_consecutive_auto_reply=3,
+    llm_config=gemini_config,
+    code_execution_config=False,
     retrieve_config={
-        "task": "code",
-        "docs_path": "/home/niel77/MechanicalAgents/cadquery-readthedocs-io-en-latest.pdf",
-        "chunk_token_size": 1000,
-        "model": gemini_config,
-        'clean_up_tokenization_spaces': False,
-        "collection_name": "groupchat",
+        "task": "qa",
+        "docs_path": "/home/niel77/MechanicalAgents/data/Examples_small.md",
+        "client": chromadb.PersistentClient(path="/tmp/chromadb"),
         "get_or_create": True,
+        "overwrite": True,  # Set to True if you want to overwrite existing collections
     },
-    code_execution_config=False,  # we don't want to execute code in this case.
-    description="Assistant who has extra content retrieval power for solving difficult problems.",
 )
 
 user_proxy = UserProxyAgent(
     name="user_proxy",
-    human_input_mode="ALWAYS",
+    human_input_mode="NEVER",
     max_consecutive_auto_reply=3,
     is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
     code_execution_config={
@@ -72,17 +88,13 @@ user_proxy = UserProxyAgent(
     },
 )
 
-user_proxy.initiate_chat(cad_data,message="Write Cadquery code to create plate with a hole.")
+#user_proxy.initiate_chat(cad_data,message="Write Cadquery code to create plate with a hole.")
 #problem_prompt=input("Enter your design problem: ")
 #problem_prompt = '''Design a brick that is 10 inches tall, 6 inches wide and 3 inches thick with filleted edges'''
 #result = user_proxy.initiate_chat(Cad_codewriter, message=problem_prompt)
 
-
-from chromadb.utils import embedding_functions
-default_ef = embedding_functions.DefaultEmbeddingFunction()
-sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
-
-from langchain_community.document_loaders import PyPDFLoader
-
-loader = PyPDFLoader("/home/niel77/MechanicalAgents/cadquery-readthedocs-io-en-latest.pdf")
-pages = loader.load_and_split()
+cad_data.initiate_chat(user_proxy, 
+                       message=cad_data.message_generator, 
+                       problem="Write Cadquery code to create plate with a hole.",
+                        summary_method='reflection_with_llm'
+                       )
