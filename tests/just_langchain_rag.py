@@ -109,7 +109,6 @@ rag_chain = (
 )
 
 #%%
-result = rag_chain.invoke("Write CadQuery code to create a plate of dimension 100*100 and thickness 5mm with hole of diameter 20mm.")
-# %%
+result = rag_chain.invoke("Write CadQuery code to create a plate with a hole.")
 print(result)
 # %%

@@ -43,12 +43,6 @@ assistant = UserProxyAgent(
     },
 )
 
-from chromadb.utils import embedding_functions
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-
-embeddings = GoogleGenerativeAIEmbeddings(google_api_key="AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug",model="models/embedding-001")
-default_ef = embedding_functions.DefaultEmbeddingFunction()
-
 
 URL = "/home/niel77/MechanicalAgents/data/Examples_small.md"
 # 2. create the RetrieveUserProxyAgent instance named "ragproxyagent"

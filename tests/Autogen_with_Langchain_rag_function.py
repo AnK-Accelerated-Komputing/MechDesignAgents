@@ -43,7 +43,7 @@ llm = ChatGoogleGenerativeAI(
 )
 
 # %%
-loaders = [ PyPDFLoader('./Examples_small.pdf') ]
+loaders = [ PyPDFLoader("/home/niel77/MechanicalAgents/data/Examples_small.pdf") ]
 docs = []
 for l in loaders:
     docs.extend(l.load())
