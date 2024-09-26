@@ -1,11 +1,9 @@
 # %%
-import json
-import os
 
 import chromadb
 
 import autogen
-from autogen import AssistantAgent
+from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
 
@@ -34,13 +32,14 @@ print("Accepted file formats for `docs_path`:")
 print(TEXT_FORMATS)
 
 # %%
-assistant = AssistantAgent(
-    name="assistant",
-    system_message="You are a helpful assistant.",
-    llm_config={
-        "timeout": 600,
-        "cache_seed": 42,
-        "config_list": config_list_gemini,
+assistant = UserProxyAgent(
+    name="user_proxy",
+    human_input_mode="NEVER",
+    max_consecutive_auto_reply=3,
+    is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
+    code_execution_config={
+        "work_dir": "NewCAD",
+        "use_docker": False,
     },
 )
 
@@ -62,19 +61,14 @@ ragproxyagent = RetrieveUserProxyAgent(
     max_consecutive_auto_reply=3,
     retrieve_config={
         "task": "code",
-        "docs_path": [
-            URL
-            ],
-        "chunk_token_size": 200,
-        "model": config_list_gemini[0]["model"],
-        "client": chromadb.PersistentClient(path="/tmp/Examples_db"),
-         # set to True if you want to overwrite an existing collection
-        "get_or_create": False,  # set to False if don't want to reuse an existing collection
-        "collection_name": "cadquery1",
-        "must_break_at_empty_line": False,
-        "embedding_function": default_ef,
+        "docs_path": "/home/niel77/MechanicalAgents/data/Examples_small.md",
+        "client": chromadb.PersistentClient(path="/tmp/chromadb"),
+        "get_or_create": True,
+        "overwrite": False,  # Set to True if you want to overwrite existing collections
+        "clean_up_tokenization_spaces": True,
     },
-    code_execution_config=False,  # set to False if you don't want to execute the code
+    code_execution_config=False,
+    description = "You are a retriever agent who codes in python to create 3D model in CadQuery"
 )
 # %%
 assistant.reset()
@@ -85,6 +79,6 @@ assistant.reset()
 # With human-in-loop, the conversation will continue until the user says "exit".
 code_problem = "Write a CadQuery code to create a plate with hole."
 ragproxyagent.initiate_chat(
-    assistant, message=ragproxyagent.message_generator, problem=code_problem, search_string="plate with hole"
+    assistant, message=ragproxyagent.message_generator, problem=code_problem,n_results=1, search_string="plate with hole"
 )  # search_string is used as an extra filter for the embeddings search, in this case, we only want to search documents that contain "spark".
 # %%
