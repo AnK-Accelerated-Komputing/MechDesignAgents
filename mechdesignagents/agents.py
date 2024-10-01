@@ -64,7 +64,7 @@ designer_aid  = RetrieveUserProxyAgent(
     retrieve_config={
         "task": "code",
         "docs_path":[
-            "/home/niel77/MechanicalAgents/data/Examples_small.md",
+            "/data/Examples_small.md",
             ],
         "chunk_token_size" : 500,
         "collection_name" : "groupchat",

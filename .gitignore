@@ -16,7 +16,8 @@ venv/
 .cache/
 *.swp
 tmp/
-/home/niel77/MechanicalAgents/mechdesignagents/mechagents_old_streamlit.py
+autogen_rag_agent.ipynb
+
 # IDE settings (VS Code, PyCharm, etc.)
 .vscode/
 .idea/

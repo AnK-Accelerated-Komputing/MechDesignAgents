@@ -1,5 +1,5 @@
 # %%
-
+import os
 from langchain_core.prompts  import PromptTemplate
 from langchain import hub
 from langchain.docstore.document import Document
@@ -22,7 +22,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 # key to the parameter `google_api_key` of the `GoogleGenerativeAIEmbeddings`
 # function: `google_api_key = "key"`.
 
-gemini_embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key="AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug")
+gemini_embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key=os.environ["GEMINI_API_KEY"])
 
 # %% 
 
@@ -64,7 +64,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 # key to the parameter `google_api_key` of the `ChatGoogleGenerativeAI` function:
 # `google_api_key="key"`.
 llm = ChatGoogleGenerativeAI(model="gemini-pro",
-                 temperature=0.7,google_api_key="AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug", top_p=0.85)
+                 temperature=0.7,google_api_key= os.environ["GEMINI_API_KEY"], top_p=0.85)
      
 #%%
 # # Prompt template to query Gemini

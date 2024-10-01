@@ -8,7 +8,7 @@ from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProx
 config_list_gemini = [
     {
         "model": 'gemini-pro',
-        "api_key": 'AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug',  # Replace with your API key variable
+        "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
         "api_type": "google",
     }
 ]
@@ -34,7 +34,7 @@ from langchain.chains import ConversationalRetrievalChain
 # %%
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-pro",
-    api_key="AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug",
+    api_key=os.environ["GEMINI_API_KEY"],
     temperature=0,
     max_tokens=None,
     timeout=None,
@@ -43,7 +43,7 @@ llm = ChatGoogleGenerativeAI(
 )
 
 # %%
-loaders = [ PyPDFLoader("/home/niel77/MechanicalAgents/data/Examples_small.pdf") ]
+loaders = [ PyPDFLoader("/data/Examples_small.pdf") ]
 docs = []
 for l in loaders:
     docs.extend(l.load())
@@ -54,7 +54,7 @@ docs = text_splitter.split_documents(docs)
 from chromadb.utils import embedding_functions
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-embeddings = GoogleGenerativeAIEmbeddings(google_api_key="AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug",model="models/embedding-001")
+embeddings = GoogleGenerativeAIEmbeddings(google_api_key=os.environ["GEMINI_API_KEY"],model="models/embedding-001")
 
 vectorstore = Chroma(
     collection_name="full_documents",

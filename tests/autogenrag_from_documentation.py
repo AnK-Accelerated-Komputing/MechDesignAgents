@@ -10,7 +10,7 @@ from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProx
 config_list_gemini = [
     {
         "model": 'gemini-pro',
-        "api_key": 'AIzaSyBEx8PESd9f8ff1IqMSQ2usB-cLngPZLug',  # Replace with your API key variable
+        "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
         "api_type": "google",
     }
 ]
@@ -44,7 +44,7 @@ assistant = UserProxyAgent(
 )
 
 
-URL = "/home/niel77/MechanicalAgents/data/Examples_small.md"
+URL = "/data/Examples_small.md"
 # 2. create the RetrieveUserProxyAgent instance named "ragproxyagent"
 # Refer to https://microsoft.github.io/autogen/docs/reference/agentchat/contrib/retrieve_user_proxy_agent
 # and https://microsoft.github.io/autogen/docs/reference/agentchat/contrib/vectordb/chromadb
@@ -55,7 +55,7 @@ ragproxyagent = RetrieveUserProxyAgent(
     max_consecutive_auto_reply=3,
     retrieve_config={
         "task": "code",
-        "docs_path": "/home/niel77/MechanicalAgents/data/Examples_small.md",
+        "docs_path": "/data/Examples_small.md",
         "client": chromadb.PersistentClient(path="/tmp/chromadb"),
         "get_or_create": True,
         "overwrite": False,  # Set to True if you want to overwrite existing collections
