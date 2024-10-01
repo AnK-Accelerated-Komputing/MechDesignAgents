@@ -15,7 +15,8 @@ venv/
 *.tmp
 .cache/
 *.swp
-
+tmp/
+/home/niel77/MechanicalAgents/mechdesignagents/mechagents_old_streamlit.py
 # IDE settings (VS Code, PyCharm, etc.)
 .vscode/
 .idea/
@@ -23,3 +24,4 @@ venv/
 # OS generated files
 .DS_Store
 Thumbs.db
+
