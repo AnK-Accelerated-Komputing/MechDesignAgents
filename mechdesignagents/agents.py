@@ -94,6 +94,7 @@ cad_coder = AssistantAgent(
 
 6. **Example Structure:**
    ```python
+   #filename: box.py
    import cadquery as cq
    from ocp_vscode import *  # Always include this for visualization.
 
@@ -132,7 +133,7 @@ reviewer = AssistantAgent(
     llm_config=llm_config,
     description="Code Reviewer who can review the python code created to generate CAD models using CadQuery and also visualize using show(model) method.",
     code_execution_config= {
-        "work_dir": "NewCADs",
+        "work_dir": "NewCAD1",
         "use_docker": False,
     },
 )
