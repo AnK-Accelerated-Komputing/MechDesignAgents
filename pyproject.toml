@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mechanicalagents"
 version = "0.1.0"
-description = ""
+description = "MechDesign agents generates CAD model using LLMs."
 authors = ["Nirmal Prasad Panta <nirmal@ank-world.com>"]
 readme = "README.md"
 
