@@ -1,0 +1,10 @@
+name: magents
+channels:
+  - defaults
+dependencies:
+  - cadquery
+  - jupyterlab
+  - ca-certificates
+  - openssl
+  - pip
+prefix: /home/niel77/miniconda3/envs/magents

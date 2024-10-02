@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "mechanicalagents"
+version = "0.1.0"
+description = ""
+authors = ["Nirmal Prasad Panta <nirmal@ank-world.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+ocp-vscode = "^2.4.1"
+cadquery = {git = "https://github.com/CadQuery/cadquery.git"}
+pyautogen = "^0.3.0"
+groq = "^0.11.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

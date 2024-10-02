@@ -3,7 +3,11 @@ from setuptools import setup, find_packages
 setup(
     name='mechdesignagents',
     version='0.1.0',
-    packages=find_packages(),
+    license="Apache Public License 2.0",
+    author="Nirmal Prasad Panta",
+    author_email="nirmal@ank-world.com",
+    description="MechDesign agents generates CAD model using LLMs.",
+    packages=find_packages(exclude=("tests",)),
     install_requires=[
         'autogen',
         'cadquery',
