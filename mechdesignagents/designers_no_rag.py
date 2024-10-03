@@ -14,7 +14,7 @@ def norag_chat(design_prblem: str):
     )
     manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
-    # Start chatting with the boss as this is the user proxy agent.
+    # Start chatting with the designer as this is the user proxy agent.
     designer.initiate_chat(
         manager,
         message=design_prblem,

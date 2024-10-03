@@ -16,11 +16,11 @@ config_list = [
         "api_key":  os.environ["GROQ_API_KEY"],
         "api_type": "groq", 
     },
-    {
-        "model": 'gemini-pro',
-        "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
-        "api_type": "google",
-    },
+    # {
+    #     "model": 'gemini-pro',
+    #     "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
+    #     "api_type": "google",
+    # },
     {
 
         "model": "llama3-8b-8192",
@@ -83,7 +83,8 @@ designer_aid  = RetrieveUserProxyAgent(
 
 cad_coder = AssistantAgent(
     "CadQuery Code Writer",
-    system_message= '''You are a CadQuery expert specializing in creating CAD models using Python. Follow the exact structure and format provided below to solve design problems and save the CAD models in STL, STEP, and DXF formats. Adhere strictly to the following outline for every response:
+    system_message= '''You are a CadQuery expert specializing in creating CAD models using Python. Follow the exact structure and format provided below to solve design problems and save the CAD models in STL, STEP, and DXF formats. 
+    Adhere strictly to the following outline for every response within the python markdown :
 
 1. **Import Libraries:**
    Always include necessary imports, especially `cadquery` and `ocp_vscode` for model visualization.
@@ -100,7 +101,7 @@ cad_coder = AssistantAgent(
 5. **Visualize the Model:**
    Use `show()` from the `ocp_vscode` library to visualize the created model.
 
-6. **Example Structure:**
+6. **Example Structure:** 
    ```python
    #filename: box.py
    import cadquery as cq
@@ -121,6 +122,8 @@ cad_coder = AssistantAgent(
 
    # Step 4: Visualize the Model
    show(box)  # Always use this to visualize the model.
+   ``` 
+   Here we end the python code block.
 ''',
     llm_config={"config_list": config_list},
     human_input_mode="NEVER",
