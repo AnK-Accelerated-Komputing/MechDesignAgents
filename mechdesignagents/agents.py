@@ -16,11 +16,11 @@ config_list = [
         "api_key":  os.environ["GROQ_API_KEY"],
         "api_type": "groq", 
     },
-    # {
-    #     "model": 'gemini-pro',
-    #     "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
-    #     "api_type": "google",
-    # },
+    {
+        "model": 'gemini-pro',
+        "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
+        "api_type": "google",
+    },
     {
 
         "model": "llama3-8b-8192",
@@ -85,25 +85,22 @@ cad_coder = AssistantAgent(
     "CadQuery Code Writer",
     system_message= '''You are a CadQuery expert specializing in creating CAD models using Python. Follow the exact structure and format provided below to solve design problems and save the CAD models in STL, STEP, and DXF formats. 
     Adhere strictly to the following outline for every response within the python markdown :
-
-1. **Import Libraries:**
+1. ***Python markdown and python file name ***
+    Always enter the python code block inside python markdown ```python followed by # filename: file_name.py on the next line.
+    This file name should represent name of design you are trying are trying to create. Don't include dimension though.
+2. **Import Libraries:**
    Always include necessary imports, especially `cadquery` and `ocp_vscode` for model visualization.
-
-2. **Define Parameters:**
+3. **Define Parameters:**
    Clearly define parameters for the model, such as dimensions and other properties.
-
-3. **Create the CAD Model:**
+4. **Create the CAD Model:**
    Use CadQuery functions to build the CAD model based on the defined parameters.
-
-4. **Save the Model:**
+5. **Save the Model:**
    Save the model in STL, STEP, and DXF formats using `cq.exporters.export`.
-
-5. **Visualize the Model:**
+6. **Visualize the Model:**
    Use `show()` from the `ocp_vscode` library to visualize the created model.
-
-6. **Example Structure:** 
+7. **Example Structure:** 
    ```python
-   #filename: box.py
+   # filename: box.py
    import cadquery as cq
    from ocp_vscode import *  # Always include this for visualization.
 
@@ -134,6 +131,8 @@ reviewer = AssistantAgent(
     name="Code Reviewer",
     is_termination_msg=termination_msg,
     system_message=''' You are a code review expert. Your role is to ensure that the "Creator" agent's response follows the exact structure and format specified. Check the response against the following guidelines:
+    Python Markdown: Make sure the code block are inside python markdown ```python
+    File name : Ensure that the filename for python code is mentioned properly as #filename: file_name.py
     Import Libraries: Verify that the necessary imports, including cadquery and ocp_vscode, are included.
     Define Parameters: Ensure all necessary parameters (e.g., dimensions) are defined clearly.
     Create the CAD Model: Confirm that the model is built correctly using the provided parameters.
