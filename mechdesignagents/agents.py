@@ -73,7 +73,7 @@ designer_aid  = RetrieveUserProxyAgent(
     retrieve_config={
         "task": "code",
         "docs_path":[
-            "data/Examples Cadquery.pdf",#change this to input any file you want for RAG
+            "/home/niel77/MechanicalAgents/data/Examples Cadquery.pdf",#change this to input any file you want for RAG
             ],
         "chunk_token_size" : 500,
         "collection_name" : "groupchat",

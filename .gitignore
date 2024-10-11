@@ -17,6 +17,7 @@ venv/
 *.swp
 tmp/
 autogen_rag_agent.ipynb
+mechdesignagents/NewCADs/
 
 # IDE settings (VS Code, PyCharm, etc.)
 .vscode/

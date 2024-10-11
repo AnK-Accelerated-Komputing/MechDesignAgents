@@ -17,12 +17,12 @@ def call_rag_chat(design_problem : str):
         ],
         n_results: Annotated[int, "number of results"] = 3,
     ) -> str:
-        designer_aid.n_results = n_results  # Set the number of results to be retrieved.
+        designer_aid.n_results = n_results  
         _context = {"problem": message, "n_results": n_results}
         ret_msg = designer_aid.message_generator(designer_aid, None, _context)
         return ret_msg or message
 
-    designer_aid.human_input_mode = "NEVER"  # Disable human input for boss_aid since it only retrieves content.
+    designer_aid.human_input_mode = "NEVER"  
 
     for caller in [cad_coder, reviewer]:
         d_retrieve_content = caller.register_for_llm(
