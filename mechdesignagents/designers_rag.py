@@ -51,7 +51,7 @@ def call_rag_chat(design_problem : str):
 def rag_chat(design_problem : str):
     reset_agents()
     groupchat = GroupChat(
-        agents=[designer_aid,  cad_coder, reviewer], messages=[], max_round=12, speaker_selection_method="round_robin"
+        agents=[designer_aid,  cad_coder, reviewer], messages=[], max_round=50, speaker_selection_method="round_robin"
     )
     manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
