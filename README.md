@@ -29,19 +29,19 @@ If you are same folder:
 python3 -m venv /path/to/new_venv
 ```
 
-#### Source the v-env (Virtual Environment):
+#### Activate (Source) the v-env (Virtual Environment):
+Replace ```/path/to/new_venv``` with your actual virtual environment path:
+
 ``` bash
 source venv/bin/activate 
 source /media/........./MechDesignAgents/.venv/bin/activate
 ```
 
 #### Requirements
-Now, install the necessary packages and
+With the virtual environment active, install dependencies:
 ``` bash
 pip install -r requirements.txt
 ```
-
-Make sure you have Python 3.6 or higher installed.
 
 
 ### Windows
@@ -63,25 +63,24 @@ git clone https://github.com/AnK-Accelerated-Komputing/MechDesignAgents.git
 cd MechDesignAgents
 ```
 #### Create a virtual Environment 
-If you are same folder: 
+Run this command to create a virtual environment:
 ``` bash
 python3 -m venv /path/to/new_venv
 ```
 
 #### Source the v-env (Virtual Environment):
+Replace ```path\to\your_venv``` with your actual virtual environment path:
 ``` bash
 venv\Scripts\activate 
  path_to_your_venv\Scripts\activate
 ```
 
 #### Requirements
-Now, install the necessary packages and
+With the virtual environment active, install dependencies:
 ``` bash
 pip install -r requirements.txt
 ```
 
-
-Make sure you have Python 3.6 or higher installed.
 
 #### Export GROQ API KEY in terminal
 ```bash 
@@ -128,12 +127,21 @@ pip install --upgrade pip setuptools
 ```
 
 ####  Dependency conflict between the installed version of package? 
-For eg: nstalling collected packages: numpy
+
+##### Example Error: : installing collected packages: numpy
 ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
 nlopt 2.8.0 requires numpy<3,>=2, but you have numpy 1.26.4 which is incompatible.
+
+Solution: Uninstall and reinstall with compatible versions. For example:
+To installs a specific version of the package (e.g., numpy==1.24.0).
+
 ```bash
 pip uninstall -y numpy && pip install numpy==1.24.0
+```
 
+
+Replace <conflict_package_name> with the actual package name and <replace_your_required_version> with the version that matches the requirements of other packages in your project.
+
+```bash
 pip uninstall -y <conflict_package_name> && pip install <conflict_package_name>==<replace_your_required_version>
-
 ```
