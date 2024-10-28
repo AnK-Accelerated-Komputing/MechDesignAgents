@@ -90,7 +90,7 @@ export GROQ_API_KEY=<YOUR_API_KEY>
 
 # MechDesignAgents File Summary
 
-| File Name                     | Likely Purpose                                                                 |
+| File Name                     | Purpose                                                                 |
 |---------------------------------|---------------------------------------------------------------------------------|
 | `__init__.py`                  | Initializes the `mechdesignagents` Python package by importing all necessary components from agent and design files.                             |
 | `agents.py`                    | Defines multiple agents for user interaction. EachEach agent has specific configurations and roles in the chat system.|
