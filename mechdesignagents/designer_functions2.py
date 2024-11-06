@@ -8,6 +8,7 @@ from typing_extensions import Annotated
 from ocp_vscode import *
 from math import *
 from typing import List, Tuple
+from agents import *
 
 # Configuration for the LLM
 config_list = [
@@ -26,7 +27,7 @@ config_list = [
 ]
 
 # Set up work directory for code execution
-workdir = Path("/Users/ishor/Desktop/Intern2-Autogen Framework/NewCADs")
+workdir = Path("/home/niel77/MechanicalAgents/mechdesignagents/NewCADs")
 workdir.mkdir(exist_ok=True)
 code_executor = LocalCommandLineCodeExecutor(work_dir=workdir)
 
@@ -40,7 +41,7 @@ chatbot = AssistantAgent(
 user_proxy = UserProxyAgent(
     name="user_proxy",
     is_termination_msg=lambda x: x.get("content", "") and "HAVE FUN!" in x.get("content", ""),
-    human_input_mode="NEVER",
+    human_input_mode="ALWAYS",
     max_consecutive_auto_reply=1,
     code_execution_config={"work_dir": "NewCADs", "use_docker": False},
 )
@@ -63,6 +64,7 @@ def create_plate(length: Annotated[float, "Length of the plate"],
                  width: Annotated[float, "Width of the plate"],
                  thickness: Annotated[float, "Thickness of the plate"]) -> str:
     plate = cq.Workplane("XY").box(length, width, thickness)
+    show_object(plate)
     file_path = workdir / "plate.stl"
     cq.exporters.export(plate, str(file_path))
     return f"Plate model created and saved as {file_path}"
@@ -75,6 +77,7 @@ def create_box(width: Annotated[float, "Width of the box"],
                height: Annotated[float, "Height of the box"],
                depth: Annotated[float, "Depth of the box"]) -> str:
     box = cq.Workplane("XY").box(width, height, depth)
+    show_object(box)
     file_path = workdir / "box.stl"
     cq.exporters.export(box, str(file_path))
     return f"Box model created and saved as {file_path}"
@@ -86,6 +89,7 @@ def create_box(width: Annotated[float, "Width of the box"],
 def create_cylinder(radius: Annotated[float, "Radius of the cylinder"],
                     height: Annotated[float, "Height of the cylinder"]) -> str:
     cylinder = cq.Workplane("XY").circle(radius).extrude(height)
+    show_object(cylinder)
     file_path = workdir / "cylinder.stl"
     cq.exporters.export(cylinder, str(file_path))
     return f"Cylinder model created and saved as {file_path}"
@@ -99,6 +103,7 @@ def create_cone(base_radius: Annotated[float, "Radius of the cone base"],
                 top_radius: Annotated[float, "Radius of the cone top"]) -> str:
     # Create the cone shape with a loft operation
     cone = cq.Workplane("XY").circle(base_radius).workplane(offset=height).circle(top_radius).loft()
+    show_object(cone)
     # Export the result to an STL file
     file_path = workdir / "cone.stl"
     exporters.export(cone, str(file_path))
@@ -111,6 +116,7 @@ def create_cone(base_radius: Annotated[float, "Radius of the cone base"],
 def create_sphere(radius: Annotated[float, "Radius of the sphere"]) -> str:
     # Create the sphere
     sphere = cq.Workplane("XY").sphere(radius)
+    show_object(sphere)
     # Export the result to an STL file
     file_path = workdir / "sphere.stl"
     exporters.export(sphere, str(file_path))
@@ -128,6 +134,7 @@ def create_plate_with_hole(length: Annotated[float, "Length of the plate"],
     result = (
         cq.Workplane("XY").box(length, height, thickness).faces(">Z").workplane().hole(center_hole_dia)
     )
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "plate_with_hole.stl"
     exporters.export(result, str(file_path))
@@ -144,6 +151,7 @@ def create_torus(major_radius: Annotated[float, "Major radius (distance from tor
     # Revolve the profile 360 degrees around the Z-axis to create the torus
     torus = torus_profile.revolve(angleDegrees=360, axisStart=(0, 0, 0), axisEnd=(0, 1, 0))
     # Export the result to an STL file
+    show_object(torus)
     file_path = workdir / "torus.stl"
     exporters.export(torus, str(file_path))
     return f"Torus model created and saved as {file_path}"
@@ -161,6 +169,8 @@ def create_rectangular_tube(outer_width: Annotated[float, "Outer width of the tu
     rect_tube = (
         cq.Workplane("XY").rect(outer_width, outer_height).rect(inner_width, inner_height).extrude(extrusion_length)
     )
+    show_object(rect_tube)
+    # Export the result to an STL file
     file_path = workdir / "rectangular_tube.stl"
     exporters.export(rect_tube, str(file_path))
     return f"Rectangular tube model created and saved as {file_path}"
@@ -177,6 +187,7 @@ def create_cylinder_tube(inner_radius: Annotated[float, "Inner radius of the tub
     # Create the cylinder tube
     cylinder_tube = (cq.Workplane("XY").center(center_x, center_y).circle(outer_radius).circle(inner_radius).extrude(height))
     # Export the result to an STL file
+    show_object(cylinder_tube)
     file_path = workdir / "cylinder_tube.stl"
     exporters.export(cylinder_tube, str(file_path))
     return f"Cylinder tube model created and saved as {file_path}"
@@ -184,7 +195,7 @@ def create_cylinder_tube(inner_radius: Annotated[float, "Inner radius of the tub
 
 
 # Function to create a CAD model by extruding a mirrored polyline as I block
-@register_cad_function(description="Create a CAD model by extruding a mirrored polyline shape.")
+@register_cad_function(description="Create a CAD model of I beam by extruding a mirrored polyline shape.")
 def create_I_Block(length: Annotated[float, "Length of extrusion"],
                              height: Annotated[float, "Height of the polyline shape"],
                              width: Annotated[float, "Width of the polyline shape"],
@@ -205,6 +216,7 @@ def create_I_Block(length: Annotated[float, "Length of extrusion"],
     result = (
         cq.Workplane("front").polyline(pts).mirrorY().extrude(length)
     )
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "I_block.stl"
     exporters.export(result, str(file_path))
@@ -226,7 +238,7 @@ def create_circularbase_with_circular_cutout(base_radius: Annotated[float, "Radi
         .circle(small_circle_radius)  # Create small circles at each point
         .extrude(extrusion_height)  # Extrude the small circles
     )
-    
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "circular_base_with_circular_cutout.stl"
     exporters.export(result, str(file_path))
@@ -249,6 +261,7 @@ def create_pillow_block(length: Annotated[float, "Length of the box"],
         cq.Workplane("XY").box(length, height, thickness).faces(">Z").workplane().hole(hole_diameter).faces(">Z").workplane()
         .rect(length - padding, height - padding, forConstruction=True).vertices().cboreHole(through_hole_diameter, counterbore_diameter, counterbore_depth)
     )
+    show_object(result)
     # Export the result to a STEP file
     step_file_path = workdir / "pillow_block.step"
     exporters.export(result, str(step_file_path))
@@ -274,7 +287,7 @@ def create_box_with_hex_cutouts(box_length: Annotated[float, "Length of the box"
         .polygon(6, hex_side_length)
         .cutThruAll()
     )
-    
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "box_with_hex_cutouts.stl"
     exporters.export(result, str(file_path))
@@ -295,6 +308,7 @@ def create_lofted_shape(box_length: Annotated[float, "Length of the base box"],
     result = (
         cq.Workplane("front").box(box_length, box_width, box_height).faces(">Z").circle(circle_radius).workplane(offset=loft_offset).rect(rect_length, rect_width).loft(combine=True)
     )
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "lofted_shape.stl"
     exporters.export(result, str(file_path))
@@ -318,6 +332,7 @@ def cylinder_with_circle_and_rectangular_hole(base_circle_radius: Annotated[floa
     # Extrude the shape
     result = result.extrude(extrusion_height)
     # Export the result to an STL file
+    show_object(result)
     file_path = workdir / "centered_shape.stl"
     exporters.export(result, str(file_path))
     return f"Centered shape model created and saved as {file_path}"
@@ -341,6 +356,7 @@ def create_spline_extrusion(profile_points: Annotated[List[Tuple[float, float]],
     )
     # Extrude the profile
     result = profile.extrude(extrusion_height)
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "spline_extrusion.stl"
     exporters.export(result, str(file_path))
@@ -366,6 +382,7 @@ def create_complex_extruded_L_shape(extrusion_length: Annotated[float, "Length o
     result = result.rotate((0, 0, 0), (1, 0, 0), rotation_angle)
     result = result.translate(result.val().BoundingBox().center.multiply(-1))
     # Export the result to an STL file
+    show_object(result)
     file_path = workdir / "complex_extruded_shape.stl"
     exporters.export(result, str(file_path))
     return f"Complex extruded shape model created and saved as {file_path}"
@@ -391,6 +408,7 @@ def create_battery_model(battery_length: Annotated[float, "Length of the battery
     )
     # Combine the battery body and cap
     result = battery_body.union(battery_cap)
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "battery_model.stl"
     exporters.export(result, str(file_path))
@@ -421,6 +439,7 @@ def create_rectangular_battery(battery_length: Annotated[float, "Length of the b
         .moveTo(-battery_length / 2 + 1, 0).polygon(6, hex_radius, forConstruction=False).polygon(6, hex_radius - 0.5, forConstruction=False).extrude(extrusion_height)  # Extrude top features
     )
     # Export the result to an STL file
+    show_object(battery_body)
     file_path = workdir / "rectangular_battery.stl"
     exporters.export(battery_body, str(file_path))
     return f"Rectangular battery model created and saved as {file_path}"
@@ -446,6 +465,7 @@ def create_bottle(length: Annotated[float, "Length of the bottle body"],
     p = p.faces(">Z").workplane(centerOption="CenterOfMass").circle(neck_radius).extrude(neck_height, True)
     # Apply shell thickness
     result = p.faces(">Z").shell(shell_thickness)
+    show_object(result)
     # Export the result to an STL file
     file_path = workdir / "bottle.stl"
     cq.exporters.export(result, str(file_path))
@@ -512,6 +532,7 @@ def create_lego_brick(
     lego_brick = tmp if lbumps == 1 and wbumps == 1 else tmp.union(base)
     # Export the model as an STL file
     file_path = workdir / "lego_brick.stl"
+    show_object(lego_brick)
     exporters.export(lego_brick, str(file_path))
     return f"LEGO-like brick model created and saved as {file_path}"
 
@@ -597,6 +618,7 @@ def create_custom_box(
         lid = lid.rotateAboutCenter((1, 0, 0), 180)
     # Step 9: Combine lid and bottom for the final box model
     final_result = lid.union(bottom)
+    show_object(final_result)
     # Export the result as an STL file
     file_path = workdir / "custom_box.stl"
     exporters.export(final_result, str(file_path))
@@ -689,6 +711,7 @@ def create_gear(
     # Generate the patterned gear with teeth
     gear_with_teeth = pattern_teeth(tooth_profile, teeth_number, A_circle)
     gear55 = main_body.cut(gear_with_teeth)
+    show_object(gear55)
     # Export the result to a STEP file
     file_path = workdir / "gear.stl"
     exporters.export(gear55, str(file_path))
@@ -721,6 +744,8 @@ def create_cycloidal_gear(r1: Annotated[float, "Radius of the larger circle"],
         cq.Workplane("XY").parametricCurve(lambda t: gear(t * 2 * pi)).twistExtrude(thickness, 90).faces(">Z").workplane().circle(r2)  # Create bore hole
         .cutThruAll()
     )
+    show_object(result)
+    # Export the result to an STL file
     file_path = workdir / "cycloidal_gear.stl"
     cq.exporters.export(result, str(file_path))
     return f"Cycloidal gear model created and saved as {file_path}"
