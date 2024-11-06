@@ -16,6 +16,7 @@ venv/
 .cache/
 *.swp
 tmp/
+NewCADs/
 autogen_rag_agent.ipynb
 mechdesignagents/NewCADs/
 
