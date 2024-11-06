@@ -121,6 +121,10 @@ cad_coder = AssistantAgent(
    show(box)  # Always use this to visualize the model.
    ``` 
    Here we end the python code block.
+
+   If functions are provided to create CAD models, use them first. If only not 
+   provided then write codes on your own.
+   
 ''',
     llm_config={"config_list": config_list},
     human_input_mode="NEVER",
