@@ -12,7 +12,7 @@ import os
 config_list = [
     {
 
-        "model": "llama3-70b-8192",
+        "model": "llama-3.1-8b-instant",
         "api_key":  os.environ["GROQ_API_KEY"],
         "api_type": "groq", 
     },
@@ -83,7 +83,8 @@ designer_aid  = RetrieveUserProxyAgent(
 
 cad_coder = AssistantAgent(
     "CadQuery Code Writer",
-    system_message= '''You are a CadQuery expert specializing in creating CAD models using Python. Follow the exact structure and format provided below to solve design problems and save the CAD models in STL, STEP, and DXF formats. 
+    system_message= '''Use provided functions to generate CAD models. If functions not present follow the prompt below:
+    You are a CadQuery expert specializing in creating CAD models using Python. Follow the exact structure and format provided below to solve design problems and save the CAD models in STL, STEP, and DXF formats. 
     Adhere strictly to the following outline for every response within the python markdown :
 1. ***Python markdown and python file name ***
     Always enter the python code block inside python markdown ```python followed by # filename: file_name.py on the next line.
@@ -158,3 +159,4 @@ def reset_agents():
     designer_aid.reset()
     cad_coder.reset()
     reviewer.reset()
+

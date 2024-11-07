@@ -1,5 +1,4 @@
-from agents import *
-
+from designer_functions import *
 
 #for two agent system with just designer and cad coder.
 problem_prompt=input("Enter your design problem: ")
