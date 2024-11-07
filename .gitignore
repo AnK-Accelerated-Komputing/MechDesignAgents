@@ -18,6 +18,7 @@ venv/
 tmp/
 NewCADs/
 autogen_rag_agent.ipynb
+Langchain_AutogenTest/store/
 mechdesignagents/NewCADs/
 
 # IDE settings (VS Code, PyCharm, etc.)
