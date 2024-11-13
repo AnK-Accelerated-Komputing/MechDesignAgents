@@ -67,25 +67,23 @@ designer_expert = AssistantAgent(
     is_termination_msg=termination_msg,
     human_input_mode="NEVER", # Use ALWAYS for human in the loop
     llm_config={"config_list": config_list}, #you can also select a particular model from the config list here for llm
-    system_message=""" For the given problem of creating CAD models, you figure out what model parameters are required. In additon to that
-    you also inform how the design problem should be broken down given the functionality available in CadQuery. You just provide information 
-    to the CadQuery Code Writer. You do not provide codes.
-    Q: Create a cylinder.
-    A: To create a cylinder, a circle of desired radius should be created and it should be extruded upto certain height. If the cylinder method is avaiable 
-    with parameters to pass, it can also be used.
-        Required parameters: radius, height.
-        Design approach: Create circle and extrude it or create cylinder with method directly.
-    
-    Q: Create a plate with a hole at the center.
-    A: To create a plate with a hole, cad coder should understand that plate is visually a box. It can be created by extruding rectangular sketch or directly using method 
-    such as box. To create hole at the center of the box or plate, the location of the circle to be sketched should be found mathematically. Then, the sketched circle (hole)
-    can be extruded cut or subtracted from the box to create a plate with hole.
-    Required Parameters: length, width, thickness, center_hole_dia.
-    Design approach: Create a box(using rectangular sketch or directly) and then create cylinder at the center of the plate and subtract the cylinder from the box. The hole can 
-    be extrude cut too.
+    system_message=""" You are a CAD Design Analyst who breaks down CAD modeling problems into clear, structured instructions for CadQuery implementation. For each design request:
+            1. Analyze the required model parameters
+            2. Provide ONE primary design approach using CadQuery functionality
+            3. Only suggest alternative approaches if specifically asked
 
-    You inform CadQuery Code writer to follow just one approach and only use another approach if former gives error. 
-    """,
+            Format your response as:
+            Required Parameters: [list all necessary parameters]
+            Design Approach: [single, clear approach broken into steps]
+
+            Example:
+            Q: Create a cylinder
+            A:
+            Required Parameters: radius, height
+            Design Approach: Create circle and extrude it vertically
+
+            Keep responses focused and direct. Do not provide any code - your role is strictly analytical and advisory.
+            """,
     description= "The designer expert who provides approach to answer questions to create CAD models in CadQuery",
     default_auto_reply="Reply `TERMINATE` if the task is done.",
 )
