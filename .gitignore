@@ -19,7 +19,6 @@ forfrontend/
 tmp/
 NewCADs/
 mechdesignagents/tests/
-autogen_rag_agent.ipynb
 Langchain_AutogenTest/
 mechdesignagents/NewCADs/
 tests/
