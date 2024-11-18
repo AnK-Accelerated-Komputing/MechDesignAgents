@@ -36,7 +36,6 @@ user_proxy = autogen.UserProxyAgent(
 primary_analyzer = autogen.AssistantAgent(
     name="primary_analyzer",
     system_message="""You are an expert engineering drawing analyst. Your task is to thoroughly analyze the drawing by:
-
     1. FIRST ANALYSIS:
     - Call analyze_drawing_with_groq with a prompt to identify number of views and basic layout, material specifications and dimensions
     
