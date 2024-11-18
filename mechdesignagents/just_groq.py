@@ -22,7 +22,7 @@ completion = client.chat.completions.create(
             "content": [
                 {
                     "type": "text",
-                    "text": "You translate image provided by user into detailed drawing specifications.  Provide dimensions, tolerances, materials, and other necessary information for creating a professional engineering drawing.  Always respond in a structured format, separating different aspects of the drawing clearly."
+                    "text": "What is the length of the connecting rod given? Verify it by looking in all drawing views."
                 },
                 {
                     "type": "image_url",

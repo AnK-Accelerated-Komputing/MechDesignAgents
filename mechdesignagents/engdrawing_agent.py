@@ -9,7 +9,7 @@ from autogen.agentchat.contrib.llava_agent import LLaVAAgent, llava_call
 config_list = [
     {
 
-        "model": "llama-3.2-90b-vision-preview	",
+        "model": "llama-3.2-90b-vision-preview",
         "api_key":  os.environ["GROQ_API_KEY"],
         "api_type": "groq", 
     },
