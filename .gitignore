@@ -19,7 +19,6 @@ forfrontend/
 tmp/
 NewCADs/
 mechdesignagents/tests/
-Langchain_AutogenTest/
 mechdesignagents/NewCADs/
 tests/
 
