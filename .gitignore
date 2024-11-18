@@ -18,9 +18,11 @@ venv/
 forfrontend/
 tmp/
 NewCADs/
+mechdesignagents/tests/
 autogen_rag_agent.ipynb
 Langchain_AutogenTest/store/
 mechdesignagents/NewCADs/
+tests/
 
 # IDE settings (VS Code, PyCharm, etc.)
 .vscode/
