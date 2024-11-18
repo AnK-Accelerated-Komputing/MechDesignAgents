@@ -293,7 +293,7 @@ def analyze_drawing_with_groq(
 
 # Example usage
 if __name__ == "__main__":
-    image_url = "./images/Drawing-of-the-connecting-rod_W640.jpg"
+    image_url = "../data/images/Drawing-of-the-connecting-rod_W640.jpg"
     question = "Explain the part in the drawing. What are the critical dimensions and material specifications of this engineering part?"
     
     process_engineering_drawing(image_url, question)
