@@ -1,7 +1,6 @@
 from autogen import ConversableAgent
 from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
-import cadquery
 from ocp_vscode import *
 import chromadb
 import os
