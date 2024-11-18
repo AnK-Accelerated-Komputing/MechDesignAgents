@@ -26,7 +26,7 @@ config_list = [
 # Create user proxy
 user_proxy = autogen.UserProxyAgent(
     name="user_proxy",
-    human_input_mode="NEVER",
+    human_input_mode="ALWAYS",
     max_consecutive_auto_reply=10,
     is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
     code_execution_config={"work_dir": "coding", "use_docker": False}
@@ -34,7 +34,7 @@ user_proxy = autogen.UserProxyAgent(
 
 # Create the primary agents
 primary_analyzer = autogen.AssistantAgent(
-    name="primary_analyzer",
+    name="Primary analyzer",
     system_message="""You are an expert engineering drawing analyst. Your task is to thoroughly analyze the drawing by:
     1. FIRST ANALYSIS:
     - Call analyze_drawing_with_groq with a prompt to identify number of views and basic layout, material specifications and dimensions
@@ -57,7 +57,7 @@ primary_analyzer = autogen.AssistantAgent(
 )
 
 verification_agent = autogen.AssistantAgent(
-    name="verification_agent",
+    name="Verification agent",
     system_message="""You are a meticulous verification specialist. Your process must be:
 
     1. SYSTEMATIC VERIFICATION:
@@ -84,7 +84,8 @@ verification_agent = autogen.AssistantAgent(
 )
 
 final_reporter = autogen.AssistantAgent(
-    name="final_reporter",
+    name="Final reporter",
+    human_input_mode= "NEVER",
     system_message="""You are a precise technical documentation specialist. Your reporting process must be:
 
     1. INITIAL REVIEW:
@@ -167,9 +168,9 @@ def process_engineering_drawing(image_url: str, question: str) -> None:
     """
     groupchat = autogen.GroupChat(
         agents=[user_proxy, primary_analyzer, verification_agent, final_reporter],
-        speaker_selection_method = "round_robin",
+        speaker_selection_method = "auto",
         messages=[],
-        max_round=10,
+        max_round=20,
     )
     manager = autogen.GroupChatManager(groupchat=groupchat)
     
@@ -292,7 +293,7 @@ def analyze_drawing_with_groq(
 
 # Example usage
 if __name__ == "__main__":
-    image_url = "/home/niel77/MechanicalAgents/mechdesignagents/images/Spanner_n.jpg"
+    image_url = "./images/Drawing-of-the-connecting-rod_W640.jpg"
     question = "Explain the part in the drawing. What are the critical dimensions and material specifications of this engineering part?"
     
     process_engineering_drawing(image_url, question)
