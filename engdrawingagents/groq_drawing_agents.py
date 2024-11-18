@@ -37,7 +37,7 @@ primary_analyzer = autogen.AssistantAgent(
     name="Primary analyzer",
     system_message="""You are an expert engineering drawing analyst. Your task is to thoroughly analyze the drawing by:
     1. FIRST ANALYSIS:
-    - Call analyze_drawing_with_groq with a prompt to identify number of views and basic layout, material specifications and dimensions
+    - Call analyze_drawing_with_groq with a single prompt to identify number of views and basic layout, material specifications and dimensions
     
     2. DETAILED EXAMINATION:
     - For each unclear detail, call analyze_drawing_with_groq with specific focused prompts
