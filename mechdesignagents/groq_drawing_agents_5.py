@@ -38,9 +38,7 @@ primary_analyzer = autogen.AssistantAgent(
     system_message="""You are an expert engineering drawing analyst. Your task is to thoroughly analyze the drawing by:
 
     1. FIRST ANALYSIS:
-    - Call analyze_drawing_with_groq with a prompt to identify number of views and basic layout
-    - Call again with a prompt specifically for material specifications
-    - Call once more for major dimensions
+    - Call analyze_drawing_with_groq with a prompt to identify number of views and basic layout, material specifications and dimensions
     
     2. DETAILED EXAMINATION:
     - For each unclear detail, call analyze_drawing_with_groq with specific focused prompts
@@ -65,7 +63,7 @@ verification_agent = autogen.AssistantAgent(
 
     1. SYSTEMATIC VERIFICATION:
     - Take each measurement from primary_analyzer
-    - Call analyze_drawing_with_groq separately for EACH dimension with very specific prompts
+    - Call analyze_drawing_with_groq separately for all dimensions with very specific prompts
     - For each critical dimension, check it in multiple views if possible
     
     2. CROSS-REFERENCING:
@@ -92,7 +90,7 @@ final_reporter = autogen.AssistantAgent(
 
     1. INITIAL REVIEW:
     - Review all verified information from previous agents
-    - Call analyze_drawing_with_groq for any missing critical details
+    - Find if any details are missing and Call analyze_drawing_with_groq for any missing critical details
     
     2. VERIFICATION COMPLETION:
     - For any uncertain measurements, call analyze_drawing_with_groq with specific queries
