@@ -84,26 +84,26 @@ designer_expert = AssistantAgent(
     default_auto_reply="Reply `TERMINATE` if the task is done.",
 )
 
-# #Here we define our RAG agent. 
-# designer_aid  = RetrieveUserProxyAgent(
-#     name="Designer_Assistant",
-#     is_termination_msg=termination_msg,
-#     human_input_mode="NEVER",
-#     llm_config={"config_list": config_list},
-#     default_auto_reply="Reply `TERMINATE` if the task is done.",
-#     code_execution_config=False,
-#     retrieve_config={
-#         "task": "code",
-#         "docs_path":[
-#             "/home/niel77/MechanicalAgents/data/code_documentation.pdf",#change this to input any file you want for RAG
-#             ],
-#         "chunk_token_size" : 500,
-#         "collection_name" : "groupchat",
-#         "get_or_create": True,
-#         "customized_prompt":'''You provide the relvant codes for creating the CAD models in CadQuery from the 
-#         documentation provided.''',
-#     },
-# )
+#Here we define our RAG agent. 
+designer_aid  = RetrieveUserProxyAgent(
+    name="Designer_Assistant",
+    is_termination_msg=termination_msg,
+    human_input_mode="NEVER",
+    llm_config={"config_list": config_list},
+    default_auto_reply="Reply `TERMINATE` if the task is done.",
+    code_execution_config=False,
+    retrieve_config={
+        "task": "code",
+        "docs_path":[
+            "/home/niel77/MechanicalAgents/data/code_documentation.pdf",#change this to input any file you want for RAG
+            ],
+        "chunk_token_size" : 500,
+        "collection_name" : "groupchat",
+        "get_or_create": True,
+        "customized_prompt":'''You provide the relvant codes for creating the CAD models in CadQuery from the 
+        documentation provided.''',
+    },
+)
 
 cad_coder_assistant = AssistantAgent(
     name="CAD coder assistant",
