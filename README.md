@@ -94,14 +94,23 @@ export GROQ_API_KEY=<YOUR_API_KEY>
 |---------------------------------|---------------------------------------------------------------------------------|
 | `__init__.py`                  | Initializes the `mechdesignagents` Python package by importing all necessary components from agent and design files.                             |
 | `agents.py`                    | Defines multiple agents for user interaction. EachEach agent has specific configurations and roles in the chat system.|
-| • Designer Agent | A user proxy that interacts with humans to gather design requirements.|
-| • Retrieve User Proxy Agent | An agent that assists in retrieving content relevant to design problems.  | 
-| • CadQuery Code Writer | Generates Python code to create CAD models using CadQuery. |
-| • Code Reviewer | Reviews the generated code for adherence to specified formats and guidelines.  |  
+| `designer_expert.py`         | (Recommended) Implements a group chat system with designer expert agent  where all agents can interact to resolve a design problem collaboratively.     |
 | `designer_cadcoder.py`         | Simple implementation where the designer agent initiates a chat with the CadQuery code writer based on a design problem input by the user. |
 | `designers_no_rag.py`          | Implements a group chat system without RAG (Retrieval-Augmented Generation), where all agents can interact to resolve a design problem collaboratively.     |
 | `designers_rag.py`             | Similar to designers_no_rag.py, but integrates a retrieval component, allowing the CadQuery code writer to retrieve relevant content before generating code.      |
-| `mechagents_old_streamlit.py` | This appears to be a user interface built using Streamlit, allowing users to select models and input API keys for interaction with the agents. It initializes the agents and manages user input. |
+
+
+## Agents: (Expect changes in these agents)
+| Agent Name                     | Purpose                                                                 |
+|---------------------------------|---------------------------------------------------------------------------------|
+| • User Agent | A user proxy that interacts with humans to gather design requirements.|
+| ~~• Retrieve User Proxy Agent~~ | ~~An agent that assists in retrieving content relevant to design problems.~~ |
+| • Designer Expert | An agent that provides information on how to approach design problems.  | 
+| • CAD coder assistant | An agent that retrieves CadQuery code relevant to design problems using langchain RAG.  | 
+| • CadQuery Code Writer | Generates Python code to create CAD models using CadQuery. |
+| • Code Executor | Executes the generated code and generates the output.  |  
+| • Code Reviewer | Reviews the generated code for adherence to specified formats and guidelines and also execution output  |  
+
 
 
 
