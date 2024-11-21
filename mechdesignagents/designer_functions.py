@@ -1,8 +1,6 @@
 import cadquery as cq
 from typing import Annotated, Callable
 from pathlib import Path
-from autogen import AssistantAgent, UserProxyAgent
-from autogen.coding import LocalCommandLineCodeExecutor
 from cadquery import exporters
 from typing_extensions import Annotated
 from ocp_vscode import *
@@ -11,12 +9,12 @@ from typing import List, Tuple
 from agents import *
 
 # # Set up work directory for code execution
-workdir = Path("/home/niel77/MechanicalAgents/mechdesignagents/NewCADs")
+workdir = Path("./NewCADs")
 
 # Custom decorator for registration
 def register_cad_function(description: str):
     def decorator(func: Callable):
-        cad_coder.register_function(
+        User.register_function(
             function_map={func.__name__: func}
         )
         cad_coder.register_for_llm(description=description)(func)
