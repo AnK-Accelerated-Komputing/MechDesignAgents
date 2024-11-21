@@ -1,6 +1,6 @@
 from autogen import GroupChat, GroupChatManager
 from designer_functions import *
-from agents2 import *
+from agents import *
 
 
 
