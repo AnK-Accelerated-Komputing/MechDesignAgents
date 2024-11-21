@@ -1,6 +1,6 @@
 from autogen import GroupChat, GroupChatManager
 from designer_functions import *
-from agents import *
+from agents2 import *
 
 
 
@@ -28,17 +28,20 @@ def designers_chat(design_problem: str):
     """
     reset_agents()
     groupchat = GroupChat(
-        agents=[designer, designer_expert, cad_coder, executor, reviewer],
+        agents=[User,designer_expert,cad_coder_assistant, cad_coder, executor, reviewer],
         messages=[],
         max_round=50,
         speaker_selection_method="round_robin",
         # speaker_selection_method="auto",
         allow_repeat_speaker=False,
+        func_call_filter=True,
+        select_speaker_auto_verbose=False,
+        send_introductions= True, 
     )
     manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
     # Start chatting with the designer as this is the user proxy agent.
-    designer.initiate_chat(
+    User.initiate_chat(
         manager,
         message=design_problem,
     )

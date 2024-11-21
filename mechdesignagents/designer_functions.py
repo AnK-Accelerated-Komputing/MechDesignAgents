@@ -16,7 +16,7 @@ workdir = Path("/home/niel77/MechanicalAgents/mechdesignagents/NewCADs")
 # Custom decorator for registration
 def register_cad_function(description: str):
     def decorator(func: Callable):
-        designer.register_function(
+        cad_coder.register_function(
             function_map={func.__name__: func}
         )
         cad_coder.register_for_llm(description=description)(func)
