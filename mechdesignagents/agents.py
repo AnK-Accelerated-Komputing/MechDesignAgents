@@ -2,7 +2,6 @@ from autogen import ConversableAgent
 from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 from ocp_vscode import *
-import chromadb
 import os
 
 
@@ -44,8 +43,8 @@ def termination_msg(x):
 #Defining agents for designing
 #First we define designer userproxy agent which takes input from human
 
-designer = UserProxyAgent(
-    name="Designer",
+User = UserProxyAgent(
+    name="User",
     is_termination_msg=termination_msg,
     human_input_mode="ALWAYS", # Use ALWAYS for human in the loop
     max_consecutive_auto_reply=5, #Change it to limit the number of replies from this agent
@@ -88,7 +87,7 @@ designer_expert = AssistantAgent(
 designer_aid  = RetrieveUserProxyAgent(
     name="Designer_Assistant",
     is_termination_msg=termination_msg,
-    human_input_mode="ALWAYS",
+    human_input_mode="NEVER",
     llm_config={"config_list": config_list},
     default_auto_reply="Reply `TERMINATE` if the task is done.",
     code_execution_config=False,
@@ -100,6 +99,8 @@ designer_aid  = RetrieveUserProxyAgent(
         "chunk_token_size" : 500,
         "collection_name" : "groupchat",
         "get_or_create": True,
+        "customized_prompt":'''You provide the relvant codes for creating the CAD models in CadQuery from the 
+        documentation provided.''',
     },
 )
 
@@ -194,7 +195,7 @@ reviewer = AssistantAgent(
 
 #clears the history of the old chats
 def reset_agents():
-    designer.reset()
+    User.reset()
     designer_aid.reset()
     executor.reset()
     cad_coder.reset()
