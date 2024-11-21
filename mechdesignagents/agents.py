@@ -1,8 +1,9 @@
-from autogen import ConversableAgent
 from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 from ocp_vscode import *
 import os
+from typing_extensions import Annotated
+from langchain_rag import langchain_rag
 
 
 #Definig config list for llms. Add more llms if you want. By default
@@ -83,26 +84,45 @@ designer_expert = AssistantAgent(
     default_auto_reply="Reply `TERMINATE` if the task is done.",
 )
 
-#Here we define our RAG agent. 
-designer_aid  = RetrieveUserProxyAgent(
-    name="Designer_Assistant",
-    is_termination_msg=termination_msg,
-    human_input_mode="NEVER",
+# #Here we define our RAG agent. 
+# designer_aid  = RetrieveUserProxyAgent(
+#     name="Designer_Assistant",
+#     is_termination_msg=termination_msg,
+#     human_input_mode="NEVER",
+#     llm_config={"config_list": config_list},
+#     default_auto_reply="Reply `TERMINATE` if the task is done.",
+#     code_execution_config=False,
+#     retrieve_config={
+#         "task": "code",
+#         "docs_path":[
+#             "/home/niel77/MechanicalAgents/data/code_documentation.pdf",#change this to input any file you want for RAG
+#             ],
+#         "chunk_token_size" : 500,
+#         "collection_name" : "groupchat",
+#         "get_or_create": True,
+#         "customized_prompt":'''You provide the relvant codes for creating the CAD models in CadQuery from the 
+#         documentation provided.''',
+#     },
+# )
+
+cad_coder_assistant = AssistantAgent(
+    name="CAD coder assistant",
+    system_message="Only use the function you have been provided with."
+    "First try to find the code for model to be created using the function provided."
+    "For example if a box has to be created search about creating the box with the function provided before moving to the next step."
+    "If nothing relevant code found for the model, search for the codes to perform tasks specified by Designer Expert, only use "
+    "the functions you have been provided with. Do not "
+    "reply with helpful tips. Once you've recommended functions and got the response pass the summarized result to the CAD coder agent ",
     llm_config={"config_list": config_list},
-    default_auto_reply="Reply `TERMINATE` if the task is done.",
-    code_execution_config=False,
-    retrieve_config={
-        "task": "code",
-        "docs_path":[
-            "/home/niel77/MechanicalAgents/data/code_documentation.pdf",#change this to input any file you want for RAG
-            ],
-        "chunk_token_size" : 500,
-        "collection_name" : "groupchat",
-        "get_or_create": True,
-        "customized_prompt":'''You provide the relvant codes for creating the CAD models in CadQuery from the 
-        documentation provided.''',
-    },
+    description="The CAD coder assistant which uses function calling to search the code for cad model generation"
 )
+
+@cad_coder_assistant.register_for_execution()
+@cad_coder_assistant.register_for_llm(description= "Code finder using Retrieval Augmented Generation")
+def call_rag(
+    question: Annotated[float, "Task for which code to be found"],
+) -> str:
+    return langchain_rag(question)
 
 cad_coder = AssistantAgent(
     "CadQuery Code Writer",
@@ -196,9 +216,11 @@ reviewer = AssistantAgent(
 #clears the history of the old chats
 def reset_agents():
     User.reset()
-    designer_aid.reset()
+    # designer_aid.reset()
+    cad_coder_assistant.reset()
     executor.reset()
     cad_coder.reset()
     reviewer.reset()
     designer_expert.reset()
+
 
