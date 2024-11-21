@@ -68,7 +68,7 @@ def main():
             print("Please try again with a more detailed prompt")
         except Exception as e:
             print(f"\nAn error occurred: {str(e)}")
-            print("Please try again or contact support if the issue persists")
+            print("Please try again or create github issues if the problem persists")
 
 if __name__ == "__main__":
     main()
