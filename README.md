@@ -1,8 +1,7 @@
 # MechDesignAgents
 
 ## Overview
-[Provide a brief overview of your project here.]
-
+An agentic system for mechanical engineering design
 
 ## Deployment
 
