@@ -22,6 +22,7 @@ mechdesignagents/tests/
 Langchain_AutogenTest/
 mechdesignagents/tests/
 mechdesignagents/NewCADs/
+mechdesignagents/Cadquery_db
 tests/
 
 # IDE settings (VS Code, PyCharm, etc.)

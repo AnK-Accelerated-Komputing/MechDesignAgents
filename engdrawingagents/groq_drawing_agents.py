@@ -1,8 +1,10 @@
 import autogen
 import base64
 import os
+from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
+from typing import Dict, Annotated
 from groq import Groq
-from typing import Dict, List, Union, Literal, Annotated
+import chromadb
 
 # Configure the agents
 config_list = [
@@ -54,6 +56,33 @@ primary_analyzer = autogen.AssistantAgent(
     
     Remember: Make multiple, specific calls to analyze_drawing_with_groq as needed. Don't try to get everything in one call.""",
     llm_config={"config_list": config_list}
+)
+
+rag_agent = RetrieveUserProxyAgent(
+    name="RAG agent",
+    system_message="""You are a knowledge retrieval expert specializing in engineering and manufacturing contexts. Your task is to:
+    1. Retrieve relevant standards, guidelines, or examples to assist with analyzing and interpreting engineering drawings.
+    2. Provide concise, actionable information that supplements the analysis by other agents.
+    3. For each request:
+       - Call the RAG system to search relevant documents or standards
+       - Respond with "RAG FINDINGS:" followed by the retrieved context
+       - Summarize how this information applies to the drawing analysis.
+    """,
+    is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
+    human_input_mode="NEVER",
+    llm_config={"config_list": config_list},
+    default_auto_reply="Reply `TERMINATE` if the task is done.",
+    code_execution_config=False,
+    retrieve_config={
+        "task": "default",
+        "docs_path":[
+            "../data/Engineering Drawing and Related Documentation Practices- ASME Y14.41-2003 .pdf",#change this to input any file you want for RAG
+            ],
+        "chunk_token_size" : 1000,
+        "client": chromadb.PersistentClient(path="/tmp/chromadb"),
+        "collection_name" : "engdrawing",
+        "get_or_create": False,
+    },
 )
 
 verification_agent = autogen.AssistantAgent(
@@ -167,8 +196,8 @@ def process_engineering_drawing(image_url: str, question: str) -> None:
     Process an engineering drawing through the multi-agent system.
     """
     groupchat = autogen.GroupChat(
-        agents=[user_proxy, primary_analyzer, verification_agent, final_reporter],
-        speaker_selection_method = "auto",
+        agents=[user_proxy, primary_analyzer,rag_agent, verification_agent, final_reporter],
+        speaker_selection_method = "round_robin",
         messages=[],
         max_round=20,
     )
@@ -293,7 +322,7 @@ def analyze_drawing_with_groq(
 
 # Example usage
 if __name__ == "__main__":
-    image_url = "../data/images/Drawing-of-the-connecting-rod_W640.jpg"
+    image_url = "../data/images/Detailed.png"
     question = "Explain the part in the drawing. What are the critical dimensions and material specifications of this engineering part?"
     
     process_engineering_drawing(image_url, question)

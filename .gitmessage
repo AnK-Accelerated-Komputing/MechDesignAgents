@@ -1,0 +1,39 @@
+# <type>[optional scope]: <description>
+# [optional body]
+# [optional footer(s)]
+# +-----------+----------------------------------------------------------+----------+
+# | Type      |                                                          | SemVer   |
+# +-----------+----------------------------------------------------------+----------+
+# | any of    | A commit that has a footer:                              | MAJOR    |
+# | following | BREAKING CHANGE: <description>                           |          |
+# | types     |                                                          | BREAKING |
+# |           | AND/OR                                                   | CHANGE   |
+# |           |                                                          |          |
+# |           | A commit that has a ! after the type or optional scope:  |          |
+# |           | <type>[optional scope]!: <description>                   |          |
+# +-----------+----------------------------------------------------------+----------+
+# | feat      | A new feature, introducing a new feature to the codebase | MINOR    |
+# +-----------+----------------------------------------------------------+----------+
+# | fix       | A bug fix, patching a bug in your codebase               | PATCH    |
+# +-----------+----------------------------------------------------------+----------+
+# | refactor  | A change that neither fixes a bug nor adds a feature     | -        |
+# +-----------+----------------------------------------------------------+----------+
+# | docs      | Documentation only changes                               | -        |
+# +-----------+----------------------------------------------------------+----------+
+# | style     | Changes that do not affect the meaning of the code       | -        |
+# |           | (white-space, formatting, missing semi-colons, etc)      |          |
+# +-----------+----------------------------------------------------------+----------+
+# | perf      | A code change that improves performance                  | -        |
+# +-----------+----------------------------------------------------------+----------+
+# | test      | Adding missing or correcting existing tests              | -        |
+# +-----------+----------------------------------------------------------+----------+
+# | chore     | Changes to the build process or auxiliary tools and      | -        |
+# |           | libraries such as documentation generation               |          |
+# +-----------+----------------------------------------------------------+----------+
+# | ci        | Changes to the continuous integration                    | -        |
+# +-----------+----------------------------------------------------------+----------+
+# | build     | Changes to the build process or code generation          | -        |
+# +-----------+----------------------------------------------------------+----------+
+#
+# Note: A scope may be provided to a commit’s type, to provide additional contextual
+# information and is contained within parentheses.
