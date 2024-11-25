@@ -36,7 +36,7 @@ def designers_chat(design_problem: str):
     """
     reset_agents()
     groupchat = GroupChat(
-        agents=[User,designer_expert,cad_coder, executor, reviewer],
+        agents=[User,designer_expert,cad_coder_assistant,cad_coder, executor, reviewer],
         messages=[],
         max_round=50,
         speaker_selection_method="round_robin",

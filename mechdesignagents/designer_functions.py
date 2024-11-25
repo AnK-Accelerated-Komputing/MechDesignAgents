@@ -6,7 +6,7 @@ from typing_extensions import Annotated
 from ocp_vscode import *
 from math import *
 from typing import List, Tuple
-from agents import *
+from agents2 import *
 
 # # Set up work directory for code execution
 workdir = Path("./NewCADs")
@@ -17,7 +17,7 @@ def register_cad_function(description: str):
         User.register_function(
             function_map={func.__name__: func}
         )
-        cad_coder.register_for_llm(description=description)(func)
+        functioncall_agent.register_for_llm(description=description)(func)
         return func
     return decorator
 
@@ -75,8 +75,6 @@ def create_cone(base_radius: Annotated[float, "Radius of the cone base"],
     exporters.export(cone, str(file_path))
     return f"Cone model created and saved as {file_path}"
 
-
-
 # Function for creating a sphere
 @register_cad_function(description="Create a CAD sphere model.")
 def create_sphere(radius: Annotated[float, "Radius of the sphere"]) -> str:
@@ -113,11 +111,8 @@ def create_plate_with_hole(length: Annotated[float, "Length of the plate"],
 def create_torus(major_radius: Annotated[float, "Major radius (distance from torus center to tube center)"],
                  minor_radius: Annotated[float, "Minor radius (radius of the tube)"]) -> str:
     # Draw a 2D circle for the minor radius (the tube of the torus)
-    torus_profile = cq.Workplane("XZ").center(major_radius, 0).circle(minor_radius)
-    # Revolve the profile 360 degrees around the Z-axis to create the torus
-    torus = torus_profile.revolve(angleDegrees=360, axisStart=(0, 0, 0), axisEnd=(0, 1, 0))
-    # Export the result to an STL file
-    show_object(torus)
+    torus = cq.Solid.makeTorus(major_radius,minor_radius)
+    show(torus)
     file_path = workdir / "torus.stl"
     exporters.export(torus, str(file_path))
     return f"Torus model created and saved as {file_path}"

@@ -4,9 +4,16 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain_chroma import Chroma
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
+
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
 
 def langchain_rag(code_question: str, 
                   pdf_path="../data/cadquery-readthedocs-io-en-latest.pdf", 
@@ -31,7 +38,7 @@ def langchain_rag(code_question: str,
         # Load and split the document
         loader = PyPDFLoader(pdf_path)
         documents = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=256, chunk_overlap=50,separators=["\n\n", "\n", ". ", " ", ""])
         all_splits = text_splitter.split_documents(documents)
         
         # Create and persist the vector store
@@ -47,29 +54,48 @@ def langchain_rag(code_question: str,
     retriever = vectorstore.as_retriever()
 
     # Define prompt template
-    system_prompt = (
-        "You are an assistant for question-answering tasks. "
-        "Use the following pieces of retrieved context to answer "
-        "the question. If you don't know the answer, say that you "
-        "don't know. "
-        "\n\n"
-        "{context}"
+    # system_prompt = (
+    #     "You are an assistant for question-answering tasks. "
+    #     "Use the following pieces of retrieved context to answer "
+    #     "the question. If you don't know the answer, say that you "
+    #     "don't know. "
+    #     "\n\n"
+    #     "{context}"
+    # )
+
+    # prompt = ChatPromptTemplate.from_messages(
+    #     [
+    #         ("system", system_prompt),
+    #         ("human", "{input}"),
+    #     ]
+    # )
+
+    # # Create chains
+    # question_answer_chain = create_stuff_documents_chain(llm, prompt)
+    # rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+    template = """Use the following pieces of context to answer the question at the end regarding using CadQuery to create CAD models.
+    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    Provide answer relevant to coding only.
+
+    {context}
+
+    Question: {question}
+
+    Helpful Answer:"""
+    custom_rag_prompt = PromptTemplate.from_template(template)
+
+    rag_chain = (
+        {"context": retriever | format_docs, "question": RunnablePassthrough()}
+        | custom_rag_prompt
+        | llm
+        | StrOutputParser()
     )
 
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("human", "{input}"),
-        ]
-    )
-
-    # Create chains
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+    response= rag_chain.invoke(code_question)
     
     # Invoke the chain
-    response = rag_chain.invoke({"input": code_question})
-    return response["answer"]
+    # response = rag_chain.invoke({"input": code_question})
+    return response
 
 # Example usage
 # if __name__ == "__main__":
