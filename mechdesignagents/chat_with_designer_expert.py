@@ -60,12 +60,12 @@ def main():
     """Main function for running the CAD design chat system."""
     print("\nCAD Design Assistant")
     print("-------------------")
-    print("Enter 'quit' to exit the program")
+    print("Enter 'exit' to exit the program")
     
     while True:
         try:
-            prompt = input("\nEnter your design problem (or 'quit'if you want to exit): ")
-            if prompt.lower() == 'quit':
+            prompt = input("\nEnter your design problem (or 'exit'if you want to exit): ")
+            if prompt.lower() == 'exit':
                 print("\nExiting CAD Design Assistant")
                 break
             designers_chat(prompt)

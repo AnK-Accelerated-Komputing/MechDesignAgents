@@ -31,7 +31,7 @@ config_list = [
 
 llm_config = {
     "seed": 25,
-    "temperature": 0,
+    "temperature": 0.3,
     "config_list": config_list,
     "request_timeout": 600,
     "retry_wait_time": 120,
@@ -86,7 +86,7 @@ functioncall_agent = AssistantAgent(
     name = "Function Call Agent",
     is_termination_msg=termination_msg,
     human_input_mode="NEVER",
-    llm_config={"config_list": config_list},
+    llm_config= llm_config,
     system_message="You are cad function or tool calling agent. You are provided with functions"
     "to create CAD models. Given the design problem for which a function is registered, call the function."
     "If the parameters for the function are not specified by the user, give parameteres yourself."
@@ -100,7 +100,7 @@ designer_expert = AssistantAgent(
     name="Designer Expert",
     is_termination_msg=termination_msg,
     human_input_mode="NEVER", # Use ALWAYS for human in the loop
-    llm_config={"config_list": config_list}, #you can also select a particular model from the config list here for llm
+    llm_config=llm_config, #you can also select a particular model from the config list here for llm
     system_message="""You are a CAD Design Expert who provides concise plan and directions to support CAD modeling in CadQuery. 
     You should also revise the approach based on feedback from designer. Explain in clear steps what
     needs to be done by CadQuery Code Writer. 
@@ -118,10 +118,10 @@ designer_expert = AssistantAgent(
 
 #Here we define our RAG agent. 
 designer_aid  = RetrieveUserProxyAgent(
-    name="Designer_Assistant",
+    name="Designer Assistant",
     is_termination_msg=termination_msg,
     human_input_mode="NEVER",
-    llm_config={"config_list": config_list},
+    llm_config=llm_config,
     default_auto_reply="Reply `TERMINATE` if the task is done.",
     code_execution_config=False,
     retrieve_config={
@@ -145,8 +145,8 @@ cad_coder_assistant = AssistantAgent(
     "If nothing relevant code found for the model, search for the codes to perform tasks specified by Designer Expert, only use "
     "the functions you have been provided with. Do not "
     "reply with helpful tips. Once you've recommended functions and got the response pass the summarized result to the CAD coder agent ",
-    llm_config={"config_list": config_list},
-    description="The CAD coder assistant which uses function calling to search the code for cad model generation"
+    llm_config=llm_config,
+    description="The CAD coder assistant which uses function or tool call (calls call_rag function) to search the code for cad model generation"
 )
 
 @cad_coder_assistant.register_for_execution()
@@ -169,16 +169,13 @@ cad_coder = AssistantAgent(
     Check the execution result returned by the executor.
     If the result indicates there is an error, fix the error and output the code again.
     Suggest the full code instead of partial code or code changes. 
-   
-    If functions not present follow the architecture below:
-    You are a CadQuery expert specializing in creating CAD models using Python. Follow the exact structure and format provided below 
-    to solve design problems and save the CAD models in STL, STEP, and DXF formats. For every response, use this format in Python markdown:
+    For every response, use this format in Python markdown:
         Adhere strictly to the following outline
         Python Markdown and File Name
         Start with ```python and # filename: <design_name>.py (based on model type).
 
         Import Libraries
-        Always import cadquery and ocp_vscode (for visualization).
+        ALWAYS import cadquery and ocp_vscode (for visualization).
 
         Define Parameters
         List dimensions or properties exactly as instructed by the analyst.
@@ -190,14 +187,14 @@ cad_coder = AssistantAgent(
         Export in STL, STEP, and DXF formats.
 
         Visualize the Model
-        Use show() from ocp_vscode to visualize.
+        Use show(model_name) from ocp_vscode to visualize.
 
         Example:
 ```
         python
         # filename: box.py
         import cadquery as cq
-        from ocp_vscode import *
+        from ocp_vscode import * #never forget this line
 
         # Step 1: Define Parameters
         height = 60.0
@@ -213,10 +210,10 @@ cad_coder = AssistantAgent(
         cq.exporters.export(box, "box.step")
 
         # Step 4: Visualize the Model
-        show(box)
+        show(box) #always visualize the model
 ```
         Only use CadQuery’s predefined shapes and operations based on the analyst’s instructions.""",
-    llm_config={"config_list": config_list},
+    llm_config=llm_config,
     human_input_mode="NEVER",
     description="CadQuery Code Writer who writes python code to create CAD models following the system message.",
 )
@@ -230,18 +227,20 @@ executor = AssistantAgent(
         "last_n_messages": 3,
         "work_dir": "NewCADs",
         "use_docker": False,
+        
     },
+    description= "Executor who executes the code written by CadQuery Code Writer."
 )
 reviewer = AssistantAgent(
     name="Reviewer",
     is_termination_msg=termination_msg,
-    system_message=''' If code ran successfully, just pass message that it ran successfully Designer for final feedback.
+    system_message=''' If code ran successfully, just pass message that it ran successfully to User for final feedback.
     IF execution fails,then only you suggest changes to code written by CadQuery Code Writer
     making sure that CadQuery Code Writer is using methods and functions available within CadQuery library
-    for recreating the cad model specified by Designer.
+    for recreating the cad model specified by User and using show method from ocp_vscode library to visualize the model.
     ''' ,
     llm_config=llm_config,
-    description="Code Reviewer who can review and execute the python code created to generate CAD models using CadQuery and also visualize using show(model) method.",
+    description="Code Reviewer who can review python code written by CadQuery Code Writer after executed by Executor.",
 )
 
 #clears the history of the old chats
