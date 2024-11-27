@@ -6,7 +6,7 @@ from typing_extensions import Annotated
 from ocp_vscode import *
 from math import *
 from typing import List, Tuple
-from agents2 import *
+from mechdesignagents.agents_v2 import *
 
 # # Set up work directory for code execution
 workdir = Path("./NewCADs")
