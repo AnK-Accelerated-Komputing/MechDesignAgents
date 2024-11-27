@@ -216,7 +216,7 @@ reviewer = AssistantAgent(
 #clears the history of the old chats
 def reset_agents():
     User.reset()
-    # designer_aid.reset()
+    designer_aid.reset()
     cad_coder_assistant.reset()
     executor.reset()
     cad_coder.reset()
