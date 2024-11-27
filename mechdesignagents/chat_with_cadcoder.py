@@ -13,11 +13,9 @@ User = UserProxyAgent(
         "use_docker": False,
     },
     # llm_config={"config_list": config_list}, #you can also select a particular model from the config list here for llm
-    system_message=""" A human designer who asks questions to create CAD models using CadQuery. Interact with Designer Expert
-    on how to create the cad model. The Designer Expert's approach to create models needs to be
-    approved by this Designer. """,
+    system_message=""" A human designer who asks questions to create CAD models using CadQuery. You execute
+    the python code written by CAD code writer. """,
     description= "The designer who asks questions to create CAD models using CadQuery",
-    default_auto_reply="Reply `TERMINATE` if the task is done.",
 )
 
 def main():
@@ -30,12 +28,14 @@ def main():
     
     while True:
         try:
-            prompt = input("\nEnter your design problem (or 'quit'if you want to exit): ")
-            if prompt.lower() == 'quit':
+            prompt = input("\nEnter your design problem (or 'exit'if you want to exit): ")
+            if prompt.lower() == 'exit':
                 print("\nExiting CAD Design Assistant")
                 break
-            User.initiate_chat(cad_coder, message=prompt)
-
+            cad_coder.reset()
+            User.reset()
+            response= User.initiate_chat(cad_coder, message=prompt)
+            print(response.cost)
             
         except KeyboardInterrupt:
             print("\nSession interrupted by user")
