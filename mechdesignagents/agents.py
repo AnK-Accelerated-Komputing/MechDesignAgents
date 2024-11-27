@@ -4,11 +4,12 @@ from ocp_vscode import *
 import os
 from typing_extensions import Annotated
 from langchain_rag import langchain_rag
+from llm import LLMConfigSelector
 
 
-#Definig config list for llms. Add more llms if you want. By default
+#Definig default config list for llms. Add more llms if you want. By default
 #Autogen will select the first one until it can use it.
-config_list = [
+default_config_list = [
     {
 
         "model": "llama-3.1-70b-versatile",
@@ -26,8 +27,29 @@ config_list = [
         "api_key":  os.environ["GROQ_API_KEY"],
         "api_type": "groq", 
     },
-    
 ]
+
+def get_user_choice():
+    while True:
+        user_input = input("Do you want to use the default llm configuration? (Y/Yes/N/No): ").strip().lower()
+        if user_input in ["y", "yes"]:
+            return "default"
+        elif user_input in ["n", "no"]:
+            return "custom"
+        else:
+            print("Invalid input. Please enter 'Y/Yes' for default or 'N/No' for custom configuration.")
+
+# Get user choice
+choice = get_user_choice()
+
+# Select config based on user input
+if choice == "default":
+    config_list = default_config_list
+    print(f"Default LLM configuration selected with model {config_list[0]['model']}.")
+else:
+    selector = LLMConfigSelector()
+    config_list = selector.get_model_config()
+    print(f"LLM configuration selected with model {config_list[0]['model']}.")
 
 llm_config = {
     "seed": 25,
