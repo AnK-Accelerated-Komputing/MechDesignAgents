@@ -19,10 +19,35 @@ def rag_chat(design_problem : str):
     manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
     # Start chatting with designer_aid as this is the user proxy agent.
-    User.initiate_chat(
+    response= User.initiate_chat(
         manager,
         message=design_problem,
     )
+    print(response.cost)
 
-prompt = input("Enter your design problem: ")
-rag_chat(prompt)
+def main():
+    """Let's create CAD models!"""
+    print("\nCAD Design Assistant")
+    print("-------------------")
+    print("Enter 'exit' to exit the program")
+    
+    while True:
+        try:
+            prompt = input("\nEnter your design problem (or 'exit'if you want to exit): ")
+            if prompt.lower() == 'exit':
+                print("\nExiting CAD Design Assistant")
+                break
+            rag_chat(prompt)
+            
+        except KeyboardInterrupt:
+            print("\nSession interrupted by user")
+            break
+        except ValueError as ve:
+            print(f"\nError: {str(ve)}")
+            print("Please try again with a more detailed prompt")
+        except Exception as e:
+            print(f"\nAn error occurred: {str(e)}")
+            print("Please try again or create github issues if the problem persists")
+
+if __name__ == "__main__":
+    main()

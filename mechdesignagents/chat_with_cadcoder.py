@@ -18,6 +18,12 @@ User = UserProxyAgent(
     description= "The designer who asks questions to create CAD models using CadQuery",
 )
 
+def chat_cadcoder(prompt: str):
+    cad_coder.reset()
+    User.reset()
+    response= User.initiate_chat(cad_coder, message=prompt)
+    print(response.cost)
+
 def main():
     """Two agent CAD generation"""
     print("\nTwo agent CAD generation system")
