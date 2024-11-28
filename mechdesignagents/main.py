@@ -3,18 +3,16 @@ from chat_with_designer_expert import designers_chat
 from chat_with_designers_no_rag import norag_chat
 from chat_with_designer_expert_with_rag import designers_rag_chat
 from chat_with_designers_autogen_rag import rag_chat
-
-
-options = {
+   
+        
+def display_chat_options():
+    options = {
         1: "Single agent chat with CAD coder",
         2: "Chat with multi-agent designer expert team without RAG",
         3: "Chat with multi-agent designer expert team with RAG",
         4: "Chat with CAD coder and reviewer with autogen RAG",
         5: "Chat with CAD coder and reviewer agents without RAG",
     }
-    
-        
-def display_chat_options():
     print("Welcome to the CAD Design AI Chatbot!")
     print("Please select one of the agentic chats to create CAD models:")
     for key, description in options.items():
