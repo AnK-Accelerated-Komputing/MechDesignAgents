@@ -1,7 +1,7 @@
 import os
 
 class LLMConfigSelector:
-    def __init__(self):
+    def __init__(self,model_config=None, default_config = None):
         # Define models and their corresponding API details
         self.model_config = {
             "gemma-7b-it": {
@@ -113,6 +113,26 @@ class LLMConfigSelector:
                 "api_key_env": "OPENAI_API_KEY"
             },
         }
+
+        self.default_config = [
+    {
+
+        "model": "llama-3.1-70b-versatile",
+        "api_key":  os.environ["GROQ_API_KEY"],
+        "api_type": "groq", 
+    },
+    {
+        "model": 'gemini-pro',
+        "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
+        "api_type": "google",
+    },
+    {
+
+        "model": "llama3-8b-8192",
+        "api_key":  os.environ["GROQ_API_KEY"],
+        "api_type": "groq", 
+    },
+]
         
     def display_models(self):
         """Display available models."""
@@ -120,6 +140,17 @@ class LLMConfigSelector:
         for i, model in enumerate(self.model_config.keys(), 1):
             print(f"  {i}. {model}")
         print()
+
+    def get_user_choice(self):
+        while True:
+            user_input = input("Do you want to use the default llm configuration? (Y/Yes/N/No): ").strip().lower()
+            if user_input in ["y", "yes"]:
+                return "default"
+            elif user_input in ["n", "no"]:
+                return "custom"
+            else:
+                print("Invalid input. Please enter 'Y/Yes' for default or 'N/No' for custom configuration.")
+
     
     def get_model_config(self):
         """
@@ -129,49 +160,53 @@ class LLMConfigSelector:
         dict: Configuration dictionary with model, api_key, and api_type
         """
         # Display available models
-        self.display_models()
-        
-        # Convert model dict keys to a list for indexing
-        models = list(self.model_config.keys())
-        
         while True:
             try:
                 # Get model selection
-                selection = input("Enter the number of the model you want to use: ").strip()
-                model_index = int(selection) - 1
-                
-                # Validate selection
-                if 0 <= model_index < len(models):
-                    selected_model = models[model_index]
+                choice = self.get_user_choice()
+
+                # Select config based on user input
+                if choice == "default":
+                    print(f"Default LLM configuration selected with model {self.default_config[0]['model']}.")
+                    return self.default_config[0]
                 else:
-                    print("Invalid selection. Please try again.")
-                    continue
-                
-                # Get model configuration details
-                model_info = self.model_config[selected_model]
-                
-                # Prompt for API key
-                print(f"\nYou selected: {selected_model}")
-                print(f"API Key Environment Variable: {model_info['api_key_env']}")
-                api_key_env = model_info['api_key_env']
-                if api_key_env in os.environ:
-                    api_key = os.environ[api_key_env]
-                    print(f"Using API key from environment variable {api_key_env}.")
-                else:
-                    api_key = input("Enter your API key: ").strip()
-                    if not api_key:
-                        print("API key cannot be empty. Please try again.")
+                    self.display_models()
+        # Convert model dict keys to a list for indexing
+                    models = list(self.model_config.keys())
+                    selection = input("Enter the number of the model you want to use: ").strip()
+                    model_index = int(selection) - 1
+                    
+                    # Validate selection
+                    if 0 <= model_index < len(models):
+                        selected_model = models[model_index]
+                    else:
+                        print("Invalid selection. Please try again.")
                         continue
-                    # Set the environment variable
-                    os.environ[model_info['api_key_env']] = api_key
-                
-                # Construct and return configuration dictionary
-                return [{
-                    "model": selected_model,
-                    "api_key": api_key,
-                    "api_type": model_info['api_type']
-                }]
-            
+                    
+                    # Get model configuration details
+                    model_info = self.model_config[selected_model]
+                    
+                    # Prompt for API key
+                    print(f"\nYou selected: {selected_model}")
+                    print(f"API Key Environment Variable: {model_info['api_key_env']}")
+                    api_key_env = model_info['api_key_env']
+                    if api_key_env in os.environ:
+                        api_key = os.environ[api_key_env]
+                        print(f"Using API key from environment variable {api_key_env}.")
+                    else:
+                        api_key = input("Enter your API key: ").strip()
+                        if not api_key:
+                            print("API key cannot be empty. Please try again.")
+                            continue
+                        # Set the environment variable
+                        os.environ[model_info['api_key_env']] = api_key
+                    
+                    # Construct and return configuration dictionary
+                    return {
+                        "model": selected_model,
+                        "api_key": api_key,
+                        "api_type": model_info['api_type']
+                    }
             except ValueError:
                 print("Please enter a valid number.")
             except Exception as e:
@@ -181,7 +216,7 @@ class LLMConfigSelector:
 #     # Demonstrate usage
 #     selector = LLMConfigSelector()
 #     config = selector.get_model_config()
-    
+#     print(config)
 #     print("\nSelected Configuration:")
 #     for key, value in config.items():
 #         print(f"{key}: {value}")
