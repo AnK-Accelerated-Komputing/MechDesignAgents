@@ -4,35 +4,15 @@ from ocp_vscode import *
 import os
 from typing_extensions import Annotated
 from langchain_rag import langchain_rag
+from llm import LLMConfigSelector
 
-
-#Definig config list for llms. Add more llms if you want. By default
+#Definig default config list for llms. Add more llms if you want. By default
 #Autogen will select the first one until it can use it.
-config_list = [
-    {
-
-        "model": "llama-3.1-70b-versatile",
-        "api_key":  os.environ["GROQ_API_KEY"],
-        "api_type": "groq", 
-    },
-    {
-        "model": 'gemini-pro',
-        "api_key": os.environ["GEMINI_API_KEY"],  # Replace with your API key variable
-        "api_type": "google",
-    },
-    {
-
-        "model": "llama3-8b-8192",
-        "api_key":  os.environ["GROQ_API_KEY"],
-        "api_type": "groq", 
-    },
-    
-]
-
+config_list_selection = LLMConfigSelector()
 llm_config = {
     "seed": 25,
     "temperature": 0.3,
-    "config_list": config_list,
+    "config_list": [config_list_selection.get_model_config()],
     "request_timeout": 600,
     "retry_wait_time": 120,
 }

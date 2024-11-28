@@ -12,7 +12,7 @@ from agents import *
 #     reviewer: [User, cad_coder]  # Can go back to user for approval or cad_coder for fixes
 # }
 
-def designers_chat(design_problem: str):
+def designers_rag_chat(design_problem: str):
     """
     Creates a group chat environment for collaborative design problem solving.
 
@@ -51,10 +51,12 @@ def designers_chat(design_problem: str):
     manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 
     # Start chatting with the designer as this is the user proxy agent.
-    User.initiate_chat(
+    response=User.initiate_chat(
         manager,
         message=design_problem,
     )
+    print(response.cost)
+
 
 def main():
     """Main function for running the CAD design chat system."""
@@ -68,7 +70,8 @@ def main():
             if prompt.lower() == 'exit':
                 print("\nExiting CAD Design Assistant")
                 break
-            designers_chat(prompt)
+            designers_rag_chat(prompt)
+        
             
         except KeyboardInterrupt:
             print("\nSession interrupted by user")
