@@ -211,15 +211,3 @@ class LLMConfigSelector:
                 print("Please enter a valid number.")
             except Exception as e:
                 print(f"An error occurred: {e}")
-
-# def main():
-#     # Demonstrate usage
-#     selector = LLMConfigSelector()
-#     config = selector.get_model_config()
-#     print(config)
-#     print("\nSelected Configuration:")
-#     for key, value in config.items():
-#         print(f"{key}: {value}")
-
-# if __name__ == "__main__":
-#     main()
