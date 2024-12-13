@@ -44,6 +44,10 @@ class LLMConfigSelector:
                 "api_type": "groq",
                 "api_key_env": "GROQ_API_KEY"
             },
+            "llama-3.3-70b-versatile": {
+                "api_type": "groq",
+                "api_key_env": "GROQ_API_KEY"
+            },
             "llama-guard-3-8b": {
                 "api_type": "groq",
                 "api_key_env": "GROQ_API_KEY"
@@ -112,9 +116,21 @@ class LLMConfigSelector:
                 "api_type": "openai", 
                 "api_key_env": "OPENAI_API_KEY"
             },
+            "gpt-4o-0806": {
+                "api_version": "2024-08-01-preview",
+                "api_type": "azure", 
+                "api_key_env": "AZURE_API_KEY"
+            }
         }
 
         self.default_config = [
+            {
+        "model": "gpt-4o-0806",
+        "api_key": os.environ["AZURE_API_KEY"],
+        "base_url": os.environ["AZURE_OPENAI_BASE"],
+        "api_type": "azure",
+        "api_version": "2024-08-01-preview"
+    },
     {
 
         "model": "llama-3.1-70b-versatile",
@@ -167,7 +183,7 @@ class LLMConfigSelector:
 
                 # Select config based on user input
                 if choice == "default":
-                    print(f"Default LLM configuration selected with model {self.default_config[0]['model']}.")
+                    # print(f"Default LLM configuration selected with model {self.default_config[0]['model']}.")
                     return self.default_config[0]
                 else:
                     self.display_models()
@@ -201,12 +217,21 @@ class LLMConfigSelector:
                         # Set the environment variable
                         os.environ[model_info['api_key_env']] = api_key
                     
+                    if selected_model=="gpt-4o-0806":
+                        return {
+                                    "model": selected_model,
+                                    "api_key": api_key,
+                                    "base_url": os.environ["AZURE_OPENAI_BASE"],
+                                    "api_type": "azure", 
+                                    "api_version": "2024-08-01-preview",
+                            }
+                    else: 
                     # Construct and return configuration dictionary
-                    return {
-                        "model": selected_model,
-                        "api_key": api_key,
-                        "api_type": model_info['api_type']
-                    }
+                        return {
+                            "model": selected_model,
+                            "api_key": api_key,
+                            "api_type": model_info['api_type']
+                        }
             except ValueError:
                 print("Please enter a valid number.")
             except Exception as e:

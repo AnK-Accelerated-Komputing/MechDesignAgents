@@ -1,6 +1,7 @@
 from autogen import GroupChat, GroupChatManager
 # from designer_functions import *
 from agents import *
+from autogen.agentchat.contrib.capabilities.vision_capability import VisionCapability
 
 # allowed_transitions = {
 #     User: [functioncall_agent,User],
@@ -12,7 +13,7 @@ from agents import *
 #     reviewer: [User, cad_coder]  # Can go back to user for approval or cad_coder for fixes
 # }
 
-def designers_chat(design_problem: str):
+def multimodal_designers_chat(design_problem: str):
     """
     Creates a group chat environment for collaborative design problem solving.
 
@@ -25,6 +26,7 @@ def designers_chat(design_problem: str):
         - cad_coder
         - executor
         - reviewer
+        - cad_reviewer
 
     Configuration:
         - max_round: 50
@@ -36,7 +38,7 @@ def designers_chat(design_problem: str):
     """
     reset_agents()
     groupchat = GroupChat(
-        agents=[User,designer_expert,cad_coder, executor, reviewer],
+        agents=[User,designer_expert,cad_coder, executor, reviewer,cad_reviewer],
         messages=[],
         max_round=50,
         # speaker_selection_method="round_robin",
@@ -48,14 +50,17 @@ def designers_chat(design_problem: str):
         # allowed_or_disallowed_speaker_transitions=allowed_transitions,
         # speaker_transitions_type="allowed"
     )
-    manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+    vision_capability = VisionCapability(lmm_config=llm_config)
+    group_chat_manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+    vision_capability.add_to_agent(group_chat_manager)
 
-    # Start chatting with the designer as this is the user proxy agent.
-    response=User.initiate_chat(
-        manager,
+    rst = User.initiate_chat(
+        group_chat_manager,
         message=design_problem,
     )
-    print(response.cost)
+    print(rst.cost)
+
+
 
 def main():
     """Main function for running the CAD design chat system."""
@@ -69,7 +74,7 @@ def main():
             if prompt.lower() == 'exit':
                 print("\nExiting CAD Design Assistant")
                 break
-            designers_chat(prompt)
+            multimodal_designers_chat(prompt)
             
         except KeyboardInterrupt:
             print("\nSession interrupted by user")
