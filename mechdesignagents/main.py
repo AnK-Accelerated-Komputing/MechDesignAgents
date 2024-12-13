@@ -2,9 +2,9 @@ from chat_with_cadcoder import chat_cad_coder
 from chat_with_designer_expert import designers_chat
 from chat_with_designers_no_rag import norag_chat
 from chat_with_designer_expert_with_rag import designers_rag_chat
-from chat_with_designers_autogen_rag import rag_chat
-   
-        
+from chat_with_designers_autogen_rag import rag_chat   
+
+      
 def display_chat_options():
     options = {
         1: "Single agent chat with CAD coder",

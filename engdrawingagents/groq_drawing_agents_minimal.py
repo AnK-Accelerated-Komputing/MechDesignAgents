@@ -1,10 +1,8 @@
 import autogen
 import base64
 import os
-from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 from typing import Dict, Annotated
 from groq import Groq
-import chromadb
 from pathlib import Path
 
 
