@@ -1,13 +1,7 @@
 import autogen
-import base64
 import os
-import json
-from datetime import datetime
 from autogen.agentchat.contrib.multimodal_conversable_agent import MultimodalConversableAgent
 from autogen.agentchat.contrib.capabilities.vision_capability import VisionCapability
-
-from typing import Dict, Annotated, Any
-import ollama
 from pathlib import Path
 
 # Global variable to store current image path
