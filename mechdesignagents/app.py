@@ -1,24 +1,14 @@
 from autogen import GroupChat, GroupChatManager
 # from designer_functions import *
-from agents import *
+from agents_v3 import *
 from autogen.agentchat.contrib.capabilities.vision_capability import VisionCapability
 
-# allowed_transitions = {
-#     User: [functioncall_agent,User],
-#     functioncall_agent: [User, designer_expert],
-#     designer_expert: [cad_coder_assistant],
-#     cad_coder_assistant: [cad_coder],
-#     cad_coder: [executor],
-#     executor: [reviewer],
-#     reviewer: [User, cad_coder]  # Can go back to user for approval or cad_coder for fixes
-# }
-
-def multimodal_designers_chat(design_problem: str):
+def multimodal_designers_chat(image_path: str):
     """
     Creates a group chat environment for collaborative design problem solving.
 
     Args:
-        design_problem (str): The design problem to be discussed.
+        image_path(str): The image path for which model is to be created.
 
     Required Agents:
         - designer
@@ -38,7 +28,7 @@ def multimodal_designers_chat(design_problem: str):
     """
     reset_agents()
     groupchat = GroupChat(
-        agents=[User,designer_expert,cad_coder, executor, reviewer,cad_data_reviewer],
+        agents=[User,drawing_recognizer,dimension_extractor,verifier,designer_expert,cad_coder, executor, reviewer],
         messages=[],
         max_round=50,
         # speaker_selection_method="round_robin",
@@ -56,25 +46,25 @@ def multimodal_designers_chat(design_problem: str):
 
     rst = User.initiate_chat(
         group_chat_manager,
-        message=design_problem,
+        message=f"<img {image_path}>",
     )
     print(rst.cost)
 
 
 
 def main():
-    """Main function for running the CAD design chat system."""
-    print("\nCAD Design Assistant")
+    """Main function for running the CAD creation  system."""
+    print("\n Let's create CAD")
     print("-------------------")
     print("Enter 'exit' to exit the program")
     
     while True:
         try:
-            prompt = input("\nEnter your design problem (or 'exit'if you want to exit): ")
-            if prompt.lower() == 'exit':
-                print("\nExiting CAD Design Assistant")
+            image_path = input("\nEnter the path to the image for CAD model creation (or 'exit'if you want to exit): ")
+            if image_path.lower() == 'exit':
+                print("\nExiting CAD creation  system")
                 break
-            multimodal_designers_chat(prompt)
+            multimodal_designers_chat(image_path)
             
         except KeyboardInterrupt:
             print("\nSession interrupted by user")
