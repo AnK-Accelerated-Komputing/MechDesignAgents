@@ -1,7 +1,6 @@
 # MechDesignAgents
 
-## Overview
-An agentic system for mechanical engineering design
+An agentic system for CAD, CAE and CAM using multiagentic team
 
 ## Deployment
 
@@ -81,9 +80,12 @@ pip install -r requirements.txt
 ```
 
 
-#### Export GROQ API KEY in terminal
+#### Export one of the API KEYs in terminal that you have
 ```bash 
 export GROQ_API_KEY=<YOUR_API_KEY>
+export OPENAI_API_KEY=<YOUR_API_KEY>
+export ANTHROPIC_API_KEY=<YOUR_API_KEY>
+export GEMINI_API_KEY=<YOUR_API_KEY>
 ```
 
 
@@ -146,10 +148,47 @@ To installs a specific version of the package (e.g., numpy==1.24.0).
 ```bash
 pip uninstall -y numpy && pip install numpy==1.24.0
 ```
-
-
 Replace <conflict_package_name> with the actual package name and <replace_your_required_version> with the version that matches the requirements of other packages in your project.
 
 ```bash
 pip uninstall -y <conflict_package_name> && pip install <conflict_package_name>==<replace_your_required_version>
+```
+
+## MechDesignAgents Directory without including files in .gitignore
+```bash
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── engdrawingagents
+│ ├── archi_drawing_agents.py
+│ ├── azure_drawing_agent.py
+│ ├── groq_drawing_agents.py
+│ ├── groq_drawing_agents_minimal.py
+│ └── langchain_rag.py
+├── environment.yml
+├── main.py
+├── mechdesignagents
+│ ├── agentic_chats.py
+│ ├── agents.py
+│ ├── chat_with_different_teams
+│ │ ├── chat_with_cadcoder.py
+│ │ ├── chat_with_designer_expert.py
+│ │ ├── chat_with_designer_expert_multimodal.py
+│ │ ├── chat_with_designer_expert_with_rag.py
+│ │ ├── chat_with_designers_autogen_rag.py
+│ │ └── chat_with_designers_no_rag.py
+│ ├── llm.py
+│ ├── test
+│ │ ├── agents_v2.py
+│ │ └── agents_v3.py
+├── poetry.lock
+├── pyproject.toml
+├── requirements.txt
+├── setup.py
+├── streamlitapp.py
+└── utils
+    ├── designer_functions.py
+    ├── langchain_rag.py
+    └── stl_path_finder.py
 ```

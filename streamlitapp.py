@@ -11,7 +11,7 @@ def initialize_session_state():
     if 'prompt' not in st.session_state:
         st.session_state.prompt = ""
     if 'current_stl_path' not in st.session_state:
-        st.session_state.current_stl_path = 'mechdesignagents/NewCADs/circular_plate.stl'
+        st.session_state.current_stl_path = 'data/ANK_CAD.stl'
     if 'color' not in st.session_state:
         st.session_state.color = "#FF9900"
     if 'material' not in st.session_state:

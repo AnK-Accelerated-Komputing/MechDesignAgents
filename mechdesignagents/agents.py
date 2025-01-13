@@ -6,7 +6,7 @@ from autogen.agentchat.contrib.multimodal_conversable_agent import MultimodalCon
 import os
 from typing_extensions import Annotated
 from utils.langchain_rag import langchain_rags
-from llm import LLMConfigSelector
+from utils.llm import LLMConfigSelector
 
 config_list_selection = LLMConfigSelector()
 llm_config = {
