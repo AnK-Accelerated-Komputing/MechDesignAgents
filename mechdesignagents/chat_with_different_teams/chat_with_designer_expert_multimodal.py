@@ -1,18 +1,12 @@
 from autogen import GroupChat, GroupChatManager
-# from designer_functions import *
+import re
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from agents import *
+from autogen.agentchat.contrib.capabilities.vision_capability import VisionCapability
 
-# allowed_transitions = {
-#     User: [functioncall_agent,User],
-#     functioncall_agent: [User, designer_expert],
-#     designer_expert: [cad_coder_assistant],
-#     cad_coder_assistant: [cad_coder],
-#     cad_coder: [executor],
-#     executor: [reviewer],
-#     reviewer: [User, cad_coder]  # Can go back to user for approval or cad_coder for fixes
-# }
-
-def designers_rag_chat(design_problem: str):
+def multimodal_designers_chat(design_problem: str):
     """
     Creates a group chat environment for collaborative design problem solving.
 
@@ -25,6 +19,7 @@ def designers_rag_chat(design_problem: str):
         - cad_coder
         - executor
         - reviewer
+        - cad_reviewer
 
     Configuration:
         - max_round: 50
@@ -34,13 +29,17 @@ def designers_rag_chat(design_problem: str):
     Example:
         >>> designers_chat("Design a water bottle")
     """
+    # Replace image file paths with <img image_path>
+    design_problem = re.sub(r'(\S+\.(?:jpg|jpeg|png|gif|bmp))', r'<img \1>', design_problem, flags=re.IGNORECASE)
     reset_agents()
     groupchat = GroupChat(
-        agents=[User,cad_coder_assistant,designer_expert,cad_coder, executor, reviewer],
+        # agents=[User,designer_expert,cad_coder, executor, reviewer,cad_data_reviewer],
+        agents=[User,designer_expert,cad_coder, executor, reviewer],
+
         messages=[],
         max_round=50,
-        speaker_selection_method="round_robin",
-        # speaker_selection_method="auto",
+        # speaker_selection_method="round_robin",
+        speaker_selection_method="auto",
         allow_repeat_speaker=False,
         func_call_filter=True,
         select_speaker_auto_verbose=False,
@@ -48,14 +47,16 @@ def designers_rag_chat(design_problem: str):
         # allowed_or_disallowed_speaker_transitions=allowed_transitions,
         # speaker_transitions_type="allowed"
     )
-    manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+    vision_capability = VisionCapability(lmm_config=llm_config)
+    group_chat_manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+    vision_capability.add_to_agent(group_chat_manager)
 
-    # Start chatting with the designer as this is the user proxy agent.
-    response=User.initiate_chat(
-        manager,
+    rst = User.initiate_chat(
+        group_chat_manager,
         message=design_problem,
     )
-    print(response.cost)
+    print(rst.cost)
+
 
 
 def main():
@@ -70,8 +71,7 @@ def main():
             if prompt.lower() == 'exit':
                 print("\nExiting CAD Design Assistant")
                 break
-            designers_rag_chat(prompt)
-        
+            multimodal_designers_chat(prompt)
             
         except KeyboardInterrupt:
             print("\nSession interrupted by user")

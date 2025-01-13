@@ -1,13 +1,17 @@
 import streamlit as st
 from streamlit_stl import stl_from_file
+import sys
 import os
-from chat_with_designer_expert_multimodal import multimodal_designers_chat
+
+# Add the mechdesignagents directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "mechdesignagents")))
+from mechdesignagents.agentic_chats import multimodal_designers_chat
 
 def initialize_session_state():
     if 'prompt' not in st.session_state:
         st.session_state.prompt = ""
     if 'current_stl_path' not in st.session_state:
-        st.session_state.current_stl_path = '/home/niel77/MechDesignAgents/mechdesignagents/NewCADs/airplane_wing_naca2412.stl'
+        st.session_state.current_stl_path = 'mechdesignagents/NewCADs/circular_plate.stl'
     if 'color' not in st.session_state:
         st.session_state.color = "#FF9900"
     if 'material' not in st.session_state:
@@ -134,6 +138,16 @@ if __name__ == "__main__":
     # Render STL viewer in the right column
     with right_col:
         render_stl_viewer()
+        stl_file = st.session_state.current_stl_path 
+        stl_file_name = os.path.basename(stl_file)
+
+        with open(stl_file, "rb") as file:
+            btn = st.download_button(
+                label="Download CAD Model",
+                data=file,
+                file_name=stl_file_name,
+                mime="application/octet-stream"
+            )
 
     # Add example prompts to the right column below the viewer
     examples = [

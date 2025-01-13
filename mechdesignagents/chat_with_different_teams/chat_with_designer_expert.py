@@ -1,16 +1,8 @@
 from autogen import GroupChat, GroupChatManager
-# from designer_functions import *
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from agents import *
-
-# allowed_transitions = {
-#     User: [functioncall_agent,User],
-#     functioncall_agent: [User, designer_expert],
-#     designer_expert: [cad_coder_assistant],
-#     cad_coder_assistant: [cad_coder],
-#     cad_coder: [executor],
-#     executor: [reviewer],
-#     reviewer: [User, cad_coder]  # Can go back to user for approval or cad_coder for fixes
-# }
 
 def designers_chat(design_problem: str):
     """
