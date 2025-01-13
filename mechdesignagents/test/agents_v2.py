@@ -2,7 +2,7 @@ from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 import os
 from typing_extensions import Annotated
-from langchain_rag import langchain_rag
+from utils.langchain_rag import langchain_rag
 
 
 #Definig config list for llms. Add more llms if you want. By default

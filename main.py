@@ -1,10 +1,11 @@
-from chat_with_cadcoder import chat_cad_coder
-from chat_with_designer_expert import designers_chat
-from chat_with_designers_no_rag import norag_chat
-from chat_with_designer_expert_with_rag import designers_rag_chat
-from chat_with_designers_autogen_rag import rag_chat   
+#Run this to start the CAD Design AI in your terminal
+import sys
+import os
 
-      
+# Add the mechdesignagents directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "mechdesignagents")))
+
+from mechdesignagents.agentic_chats import chat_cad_coder, designers_chat, designers_rag_chat, rag_chat, norag_chat
 def display_chat_options():
     options = {
         1: "Single agent chat with CAD coder",

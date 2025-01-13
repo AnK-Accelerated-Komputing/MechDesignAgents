@@ -5,7 +5,7 @@ from autogen.agentchat.contrib.multimodal_conversable_agent import MultimodalCon
 
 import os
 from typing_extensions import Annotated
-from llm import LLMConfigSelector
+from utils.llm import LLMConfigSelector
 
 #Definig default config list for llms. Add more llms if you want. By default
 #Autogen will select the first one until it can use it.

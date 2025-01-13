@@ -15,7 +15,7 @@ from langchain.chains import create_retrieval_chain
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
-def langchain_rag(code_question: str, 
+def langchain_rags(code_question: str, 
                   pdf_path="../data/cadquery-readthedocs-io-en-latest.pdf", 
                   persist_directory="./Cadquery_db") -> str:
     # Initialize embeddings
@@ -52,27 +52,7 @@ def langchain_rag(code_question: str,
     
     # Create retriever
     retriever = vectorstore.as_retriever()
-
-    # Define prompt template
-    # system_prompt = (
-    #     "You are an assistant for question-answering tasks. "
-    #     "Use the following pieces of retrieved context to answer "
-    #     "the question. If you don't know the answer, say that you "
-    #     "don't know. "
-    #     "\n\n"
-    #     "{context}"
-    # )
-
-    # prompt = ChatPromptTemplate.from_messages(
-    #     [
-    #         ("system", system_prompt),
-    #         ("human", "{input}"),
-    #     ]
-    # )
-
-    # # Create chains
-    # question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    # rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+    
     template = """Use the following pieces of context to answer the question at the end regarding using CadQuery to create CAD models.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
     Provide answer relevant to coding only.
