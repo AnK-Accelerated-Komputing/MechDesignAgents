@@ -1,3 +1,4 @@
+#Run this to start the CAD Design AI in your terminal
 import sys
 import os
 
